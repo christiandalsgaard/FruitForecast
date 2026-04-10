@@ -1,3 +1,12 @@
+/**
+ * ProduceCard — expandable card showing a produce item's season status,
+ * shopping tips, season calendar, and a favorite button.
+ *
+ * Tapping the card expands it to show detailed info. The heart button
+ * in the top-right lets users favorite items for push notifications.
+ * All taps are tracked via analytics.
+ */
+
 import React, { useState } from "react";
 import {
   View,
@@ -17,8 +26,10 @@ import {
   getScoreBgColors,
   getCalendarBarColor,
 } from "../utils/theme";
+import { track, EVENTS } from "../utils/analytics";
+import FavoriteButton from "./FavoriteButton";
 
-// Enable LayoutAnimation on Android
+// Enable LayoutAnimation on Android (no-op on web/iOS)
 if (
   Platform.OS === "android" &&
   UIManager.setLayoutAnimationEnabledExperimental
@@ -37,13 +48,22 @@ export default function ProduceCard({
 
   const label = getSeasonLabel(score);
   const color = getScoreColor(score);
-  // bg2 (gradient end color) is available but only used if LinearGradient is
-  // added later — destructure just bg1 for now.
+  // bg2 (gradient end color) available if LinearGradient is added later
   const [bg1] = getScoreBgColors(score);
 
   const toggleExpand = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpanded(!expanded);
+
+    // Track produce taps for analytics — helps understand which items
+    // users are most interested in.
+    if (!expanded) {
+      track(EVENTS.PRODUCE_TAP, {
+        produce: item.name,
+        score,
+        season: label,
+      });
+    }
   };
 
   return (
@@ -60,13 +80,13 @@ export default function ProduceCard({
     >
       {/* Main row */}
       <View style={styles.row}>
-        {/* Rank */}
+        {/* Rank number */}
         <Text style={styles.rank}>{rank}</Text>
 
-        {/* Emoji */}
+        {/* Produce emoji */}
         <Text style={styles.emoji}>{item.emoji}</Text>
 
-        {/* Name and description */}
+        {/* Name, description, and type badge */}
         <View style={styles.info}>
           <View style={styles.nameRow}>
             <Text style={styles.name}>{item.name}</Text>
@@ -99,9 +119,12 @@ export default function ProduceCard({
           <Text style={styles.desc}>{item.desc}</Text>
         </View>
 
-        {/* Score indicator */}
+        {/* Score indicator + favorite heart */}
         <View style={styles.scoreArea}>
-          <Text style={[styles.scoreLabel, { color }]}>{label}</Text>
+          <View style={styles.scoreTopRow}>
+            <Text style={[styles.scoreLabel, { color }]}>{label}</Text>
+            <FavoriteButton produceId={item.id} climateShift={climateShift} />
+          </View>
           <View style={styles.scoreBarBg}>
             <View
               style={[styles.scoreBar, { width: `${score}%`, backgroundColor: color }]}
@@ -110,7 +133,7 @@ export default function ProduceCard({
         </View>
       </View>
 
-      {/* Expanded detail */}
+      {/* Expanded detail section */}
       {expanded && (
         <View style={styles.expandedArea}>
           {/* Shopping tip */}
@@ -121,7 +144,7 @@ export default function ProduceCard({
             </View>
           )}
 
-          {/* Season calendar */}
+          {/* Season calendar — 12 bars showing peak/off months */}
           <Text style={styles.sectionTitle}>SEASON CALENDAR</Text>
           <View style={styles.calendarRow}>
             {MONTH_NAMES.map((m, i) => {
@@ -154,7 +177,7 @@ export default function ProduceCard({
             })}
           </View>
 
-          {/* Legend */}
+          {/* Color legend for the calendar bars */}
           <View style={styles.legend}>
             {[
               { color: COLORS.calPeak, label: "Peak" },
@@ -230,15 +253,21 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
     marginTop: 2,
   },
+  // Score area — label, heart, and progress bar
   scoreArea: {
-    width: 90,
+    width: 110,
     alignItems: "flex-end",
+  },
+  scoreTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginBottom: 4,
   },
   scoreLabel: {
     fontSize: 10,
     fontWeight: "700",
     fontFamily: FONTS.mono,
-    marginBottom: 4,
   },
   scoreBarBg: {
     width: "100%",
@@ -252,7 +281,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
 
-  // Expanded
+  // Expanded detail section
   expandedArea: {
     marginTop: 14,
     paddingTop: 14,

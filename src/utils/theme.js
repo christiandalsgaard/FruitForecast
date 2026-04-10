@@ -1,61 +1,82 @@
 /**
  * Fruit Forecast — design tokens and theme constants.
+ *
+ * Traffic-light season palette:
+ *   Green  → in season / peak
+ *   Yellow → coming soon / shoulder
+ *   Red    → off season / out of season
+ *
+ * Background and text use a warm peach/cream palette
+ * for a friendly, produce-market feel.
  */
 
+import { Platform } from "react-native";
+
 export const COLORS = {
-  // Core palette
-  background: "#fdfcfb",
-  backgroundAlt: "#f5f0eb",
-  backgroundDark: "#e8e0d8",
-  text: "#2c2c2c",
-  textSecondary: "#6b6256",
-  textMuted: "#8a7a6a",
-  textFaint: "#aaaaaa",
-  accent: "#2d6a4f",
-  accentLight: "#52796f",
+  // Core palette — warm, tropical, inviting
+  background: "#FFF5EB",       // Peach cream
+  backgroundAlt: "#FFE8D6",    // Warm apricot
+  backgroundDark: "#FFDAB9",   // Peach puff
+  text: "#3D2315",             // Rich cocoa brown
+  textSecondary: "#6B4226",    // Warm brown
+  textMuted: "#A0785C",        // Caramel
+  textFaint: "#C4A882",        // Light tan
+  accent: "#FF6B35",           // Tangerine orange — primary action color
+  accentLight: "#FF8C5A",      // Light tangerine
 
-  // Season score colors
-  peak: "#2d6a4f",
-  inSeason: "#52796f",
-  comingSoon: "#8a7044",
-  offSeason: "#8b6f5e",
-  outOfSeason: "#7a7a7a",
+  // ── Traffic-light season score colors ──────────────────────────
+  peak: "#2E7D32",             // Deep green — peak freshness
+  inSeason: "#43A047",         // Green — in season and available
+  comingSoon: "#F9A825",       // Amber yellow — approaching season
+  offSeason: "#E65100",        // Deep orange — winding down
+  outOfSeason: "#C62828",      // Red — out of season
 
-  // Season score backgrounds
-  peakBg: "#d8f3dc",
-  peakBg2: "#b7e4c7",
-  inSeasonBg: "#e8f5e9",
-  inSeasonBg2: "#dcedc8",
-  comingSoonBg: "#fff8e1",
-  comingSoonBg2: "#ffecb3",
-  offSeasonBg: "#fbe9e7",
-  offSeasonBg2: "#ffccbc",
-  outBg: "#f5f5f5",
-  outBg2: "#e0e0e0",
+  // ── Card backgrounds — soft tinted washes ─────────────────────
+  peakBg: "#E8F5E9",           // Light green wash
+  peakBg2: "#C8E6C9",          // Deeper green wash
+  inSeasonBg: "#F1F8E9",       // Pale green
+  inSeasonBg2: "#DCEDC8",      // Soft green
+  comingSoonBg: "#FFFDE7",     // Light yellow
+  comingSoonBg2: "#FFF9C4",    // Soft yellow
+  offSeasonBg: "#FFF3E0",      // Light orange
+  offSeasonBg2: "#FFE0B2",     // Soft orange
+  outBg: "#FFEBEE",            // Light red wash
+  outBg2: "#FFCDD2",           // Soft red wash
 
-  // Calendar bar colors
-  calPeak: "#2d6a4f",
-  calInSeason: "#81b29a",
-  calComing: "#c9b458",
-  calOff: "#d4a574",
-  calOut: "#e0dcd7",
+  // ── Calendar bar colors — vivid strips ────────────────────────
+  calPeak: "#2E7D32",          // Deep green
+  calInSeason: "#66BB6A",      // Medium green
+  calComing: "#F9A825",        // Amber yellow
+  calOff: "#EF6C00",           // Orange
+  calOut: "#EF5350",           // Red
 
-  // Type badge colors
-  fruitBadgeBg: "rgba(255,152,0,0.12)",
-  fruitBadgeText: "#e65100",
-  vegBadgeBg: "rgba(76,175,80,0.12)",
-  vegBadgeText: "#2e7d32",
+  // ── Type badge colors ─────────────────────────────────────────
+  fruitBadgeBg: "rgba(255,107,53,0.14)",
+  fruitBadgeText: "#D84315",
+  vegBadgeBg: "rgba(76,175,80,0.14)",
+  vegBadgeText: "#2E7D32",
 
   white: "#ffffff",
   black: "#000000",
-  separator: "rgba(0,0,0,0.06)",
-  cardBorder: "rgba(0,0,0,0.05)",
-  peakCardBorder: "rgba(45,106,79,0.2)",
+  separator: "rgba(61,35,21,0.08)",
+  cardBorder: "rgba(61,35,21,0.06)",
+  peakCardBorder: "rgba(46,125,50,0.25)",  // Green glow for peak cards
 };
 
+// Rounded, friendly fonts. Avenir Next (iOS) and Nunito (web) have a soft,
+// organic feel that fits the produce-market vibe. Menlo/JetBrains Mono
+// give labels a clean, informational look.
 export const FONTS = {
-  serif: "Georgia",
-  mono: "Courier New",
+  serif: Platform.select({
+    ios: "Avenir Next",
+    android: "sans-serif",
+    web: "Nunito, Quicksand, 'Segoe UI', sans-serif",
+  }),
+  mono: Platform.select({
+    ios: "Menlo",
+    android: "monospace",
+    web: "'JetBrains Mono', 'Fira Code', 'SF Mono', monospace",
+  }),
 };
 
 export function getScoreColor(score) {

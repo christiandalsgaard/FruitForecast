@@ -7,10 +7,18 @@ import HomeScreen from "./screens/HomeScreen";
 // On web, Expo's HTML template sets body { overflow: hidden; height: 100% }
 // which prevents page-level scrolling. We need the page to scroll naturally
 // so we reset those constraints here, before any React rendering occurs.
+// Also load the Nunito and JetBrains Mono fonts for the fruity theme.
 if (Platform.OS === "web") {
   document.documentElement.style.height = "auto";
   document.body.style.height = "auto";
   document.body.style.overflow = "auto";
+
+  // Inject Google Fonts link for the rounded, playful fonts used in theme.js
+  const fontLink = document.createElement("link");
+  fontLink.rel = "stylesheet";
+  fontLink.href =
+    "https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap";
+  document.head.appendChild(fontLink);
 }
 
 function App() {

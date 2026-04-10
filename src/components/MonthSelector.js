@@ -53,13 +53,13 @@ export default function MonthSelector({ selectedMonth, onSelect }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "rgba(255,255,255,0.6)",
+    backgroundColor: "rgba(255,255,255,0.65)",
     borderRadius: 16,
     padding: 16,
     marginHorizontal: 20,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: "rgba(45,106,79,0.08)",
+    borderColor: "rgba(255,107,53,0.12)",
   },
   header: {
     flexDirection: "row",

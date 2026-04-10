@@ -1,3 +1,12 @@
+/**
+ * HomeScreen — main view showing seasonal produce ranked by freshness.
+ *
+ * On mount, attempts to get the user's device location (browser geolocation
+ * on web, expo-location on native). If granted, fetches real weather from
+ * Open-Meteo and reverse-geocodes the coordinates into a city name via
+ * Nominatim. Users can also tap the location pill to manually pick a region.
+ */
+
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   View,
@@ -10,79 +19,154 @@ import {
 import * as Location from "expo-location";
 import { StatusBar } from "expo-status-bar";
 import { PRODUCE_DB } from "../data/produce";
-import {
-  getClimateShift,
-  getSeasonScore,
-  getLocationName,
-} from "../utils/season";
+import { getClimateShift, getSeasonScore } from "../utils/season";
+import { fetchWeather, reverseGeocode } from "../utils/weather";
 import { COLORS, FONTS } from "../utils/theme";
+import { track, EVENTS } from "../utils/analytics";
+import { scheduleSeasonAlerts } from "../utils/notifications";
 import MonthSelector from "../components/MonthSelector";
 import InfoBar from "../components/InfoBar";
 import FilterBar from "../components/FilterBar";
 import ProduceCard from "../components/ProduceCard";
+import RegionPicker from "../components/RegionPicker";
+import MarketFinder from "../components/MarketFinder";
+import RecipeSuggestions from "../components/RecipeSuggestions";
+
+// ── Location helpers ──────────────────────────────────────────────
+// Abstracts the difference between web (navigator.geolocation) and
+// native (expo-location) into a single async function.
+
+async function getDeviceLocation() {
+  if (Platform.OS === "web") {
+    // Browser geolocation API — works on localhost and HTTPS origins.
+    // Wrapping in a promise with a timeout so we don't hang indefinitely
+    // if the user ignores the permission dialog.
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocation not supported in this browser"));
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (position) =>
+          resolve({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          }),
+        (error) => reject(error),
+        { timeout: 10000, enableHighAccuracy: false },
+      );
+    });
+  }
+
+  // Native (iOS/Android) — use expo-location
+  const { status } = await Location.requestForegroundPermissionsAsync();
+  if (status !== "granted") {
+    throw new Error("Location permission denied");
+  }
+  const loc = await Location.getCurrentPositionAsync({
+    accuracy: Location.Accuracy.Low,
+  });
+  return {
+    latitude: loc.coords.latitude,
+    longitude: loc.coords.longitude,
+  };
+}
+
+// Default coordinates (New York, NY) used when location is unavailable
+const DEFAULT_COORDS = { latitude: 40.71, longitude: -74.01 };
+
+// ── Component ─────────────────────────────────────────────────────
 
 export default function HomeScreen() {
   const [month, setMonth] = useState(new Date().getMonth());
   const [filter, setFilter] = useState("all");
+  const [coords, setCoords] = useState(null);
   const [locationName, setLocationName] = useState("Loading…");
   const [climateShift, setClimateShift] = useState(0);
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showRegionPicker, setShowRegionPicker] = useState(false);
 
-  // Location is fetched ONCE on mount — not on every month change.
-  // The original code had [month] as a dep, which re-requested location
-  // permissions every time the user tapped a different month. Weather is
-  // calculated from the actual current month, not the selected display month.
+  // ── Step 1: Get device location on mount ──────────────────────
+  // Runs once. On success, sets coords which triggers the weather
+  // effect below. On failure, falls back to New York defaults.
   useEffect(() => {
     (async () => {
       try {
-        // Web: expo-location hangs indefinitely waiting for a browser permission
-        // dialog that never appears in some environments. Skip it and use defaults.
-        if (Platform.OS === "web") {
-          setLocationName("Default region");
-          setWeather({ temp: 62, humidity: 55 });
-          setLoading(false);
-          return;
-        }
-
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          setLocationName("Location unavailable");
-          setWeather({ temp: 62, humidity: 55 });
-          setLoading(false);
-          return;
-        }
-
-        const loc = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.Low,
-        });
-        const { latitude, longitude } = loc.coords;
-
-        // Use the real current month for weather, not the selected display month.
-        // The user can browse different months for seasonal data, but weather
-        // should always reflect current conditions.
-        const currentMonth = new Date().getMonth();
-        const baseTemps =
-          latitude > 40
-            ? [28, 32, 42, 55, 65, 75, 82, 80, 70, 58, 44, 32]
-            : latitude > 25
-            ? [52, 55, 62, 70, 78, 86, 90, 89, 84, 74, 62, 54]
-            : [70, 72, 75, 78, 82, 85, 87, 87, 85, 80, 75, 71];
-        const temp =
-          baseTemps[currentMonth] + Math.round((Math.random() - 0.5) * 8);
-
-        setClimateShift(getClimateShift(latitude));
-        setLocationName(getLocationName(latitude, longitude));
-        setWeather({ temp, humidity: 40 + Math.round(Math.random() * 30) });
+        const position = await getDeviceLocation();
+        setCoords(position);
       } catch {
-        setLocationName("Default region");
+        // Location unavailable — fall back to New York
+        setCoords(DEFAULT_COORDS);
+        setLocationName("New York, NY");
+      }
+    })();
+  }, []);
+
+  // ── Step 2: Fetch weather + geocode whenever coords change ────
+  // This runs after initial location detection AND after the user
+  // picks a new region from the RegionPicker.
+  useEffect(() => {
+    if (!coords) return;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        // Fetch weather and city name in parallel for speed
+        const [weatherData, cityName] = await Promise.all([
+          fetchWeather(coords.latitude, coords.longitude),
+          reverseGeocode(coords.latitude, coords.longitude),
+        ]);
+
+        if (cancelled) return;
+        setWeather(weatherData);
+        setLocationName(cityName);
+        const shift = getClimateShift(coords.latitude);
+        setClimateShift(shift);
+
+        // Schedule push notifications for favorited produce now that
+        // we know the user's climate zone.
+        scheduleSeasonAlerts(shift).catch(() => {});
+      } catch {
+        if (cancelled) return;
         setWeather({ temp: 62, humidity: 55 });
+        setClimateShift(getClimateShift(coords.latitude));
       }
       setLoading(false);
     })();
-  }, []); // Empty deps — location fetched once, not on every month change
 
-  // Compute scored and sorted produce list whenever month, filter, or climate changes
+    // Cleanup: if coords change again before the fetch completes,
+    // discard the stale result so we don't flash an old city name.
+    return () => {
+      cancelled = true;
+    };
+  }, [coords]);
+
+  // ── Region picker handlers ────────────────────────────────────
+
+  // Called when the user picks a preset city from the list
+  const handleRegionSelect = useCallback((region) => {
+    setLoading(true);
+    setLocationName(region.name);
+    setCoords({ latitude: region.latitude, longitude: region.longitude });
+    track(EVENTS.REGION_CHANGE, { region: region.name });
+  }, []);
+
+  // Called when the user taps "Use My Location" in the picker
+  const handleUseMyLocation = useCallback(async () => {
+    setLoading(true);
+    setLocationName("Locating…");
+    try {
+      const position = await getDeviceLocation();
+      setCoords(position);
+    } catch {
+      setCoords(DEFAULT_COORDS);
+      setLocationName("New York, NY");
+      setLoading(false);
+    }
+  }, []);
+
+  // ── Compute scored/sorted produce list ────────────────────────
   const scoredProduce = useMemo(
     () =>
       PRODUCE_DB.filter((item) => filter === "all" || item.type === filter)
@@ -103,7 +187,17 @@ export default function HomeScreen() {
     [scoredProduce],
   );
 
-  // Stable render function for FlatList — only recreates when month or climate changes
+  // Names of peak-season produce — passed to RecipeSuggestions so it
+  // can query the Spoonacular API with the right ingredients.
+  const peakProduceNames = useMemo(
+    () =>
+      scoredProduce
+        .filter((i) => i.score === 100)
+        .map((i) => i.name.toLowerCase()),
+    [scoredProduce],
+  );
+
+  // Stable render function for FlatList
   const renderItem = useCallback(
     ({ item, index }) => (
       <ProduceCard
@@ -119,10 +213,10 @@ export default function HomeScreen() {
 
   const keyExtractor = useCallback((item) => item.id, []);
 
-  // Memoize header and footer elements so FlatList doesn't remount them on
-  // every render. Defining them as inline arrow functions inside the component
-  // produces a new function reference each render, which FlatList treats as a
-  // new component type — causing unnecessary remounts.
+  // ── Memoized header and footer ────────────────────────────────
+  // Defined as memoized elements (not inline components) so FlatList
+  // doesn't remount them on every render.
+
   const listHeader = useMemo(
     () => (
       <>
@@ -136,17 +230,40 @@ export default function HomeScreen() {
           </Text>
         </View>
 
-        <InfoBar locationName={locationName} weather={weather} month={month} />
-        <MonthSelector selectedMonth={month} onSelect={setMonth} />
+        <InfoBar
+          locationName={locationName}
+          weather={weather}
+          month={month}
+          onLocationPress={() => setShowRegionPicker(true)}
+        />
+        <MonthSelector
+          selectedMonth={month}
+          onSelect={(m) => {
+            setMonth(m);
+            track(EVENTS.MONTH_CHANGE, { month: m });
+          }}
+        />
         <FilterBar
           filter={filter}
-          onFilterChange={setFilter}
+          onFilterChange={(f) => {
+            setFilter(f);
+            track(EVENTS.FILTER_CHANGE, { filter: f });
+          }}
           peakCount={peakCount}
           inSeasonCount={inSeasonCount}
         />
+
+        {/* Farmer's markets near the user's selected region */}
+        <MarketFinder
+          latitude={coords?.latitude}
+          longitude={coords?.longitude}
+        />
+
+        {/* Recipe suggestions using currently peak produce (requires API key) */}
+        <RecipeSuggestions peakProduceNames={peakProduceNames} />
       </>
     ),
-    [locationName, weather, month, filter, peakCount, inSeasonCount],
+    [locationName, weather, month, filter, peakCount, inSeasonCount, coords, peakProduceNames],
   );
 
   const listFooter = useMemo(
@@ -156,7 +273,7 @@ export default function HomeScreen() {
           Fruit Forecast · Seasonal produce guide
         </Text>
         <Text style={styles.footerText}>
-          Data based on typical North American growing seasons
+          Weather powered by Open-Meteo · Geocoding by Nominatim
         </Text>
         <Text style={[styles.footerText, { marginTop: 6 }]}>
           Tap any item to view its season calendar & shopping tips
@@ -166,18 +283,29 @@ export default function HomeScreen() {
     [],
   );
 
+  // ── Loading state ─────────────────────────────────────────────
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={COLORS.accent} />
-        <Text style={styles.loadingText}>Checking your location…</Text>
+        <Text style={styles.loadingText}>Finding your location…</Text>
       </View>
     );
   }
 
-  // Web layout: FlatList requires an internal scroll container with a fixed height,
-  // which is unreliable across browsers. Instead, render items in a plain View and
-  // let the page scroll naturally (body overflow is set to auto in App.js).
+  // ── Region picker modal (rendered regardless of layout) ───────
+  const regionPicker = (
+    <RegionPicker
+      visible={showRegionPicker}
+      onClose={() => setShowRegionPicker(false)}
+      onSelect={handleRegionSelect}
+      onUseMyLocation={handleUseMyLocation}
+    />
+  );
+
+  // ── Web layout: plain View with page-level scrolling ──────────
+  // FlatList needs a fixed-height container which is unreliable on web.
+  // Instead we render items in a View and let the browser scroll the page.
   if (Platform.OS === "web") {
     return (
       <View style={styles.screenWeb}>
@@ -194,11 +322,12 @@ export default function HomeScreen() {
           />
         ))}
         {listFooter}
+        {regionPicker}
       </View>
     );
   }
 
-  // Native (iOS/Android): FlatList with virtualization for smooth scrolling
+  // ── Native layout: FlatList with virtualization ───────────────
   return (
     <View style={styles.screen}>
       <StatusBar style="dark" />
@@ -214,17 +343,20 @@ export default function HomeScreen() {
         maxToRenderPerBatch={10}
         windowSize={7}
       />
+      {regionPicker}
     </View>
   );
 }
 
+// ── Styles ──────────────────────────────────────────────────────
+
 const styles = StyleSheet.create({
-  // Native screen: flex: 1 fills the safe area, FlatList scrolls internally
+  // Native: flex fills safe area, FlatList scrolls internally
   screen: {
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  // Web screen: no fixed height — grows with content and lets the page scroll
+  // Web: no fixed height — grows with content, page scrolls
   screenWeb: {
     backgroundColor: COLORS.background,
     paddingBottom: 40,
@@ -247,7 +379,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.serif,
   },
 
-  // Header section
+  // ── Header ─────────────────────────────────────────────────────
   header: {
     paddingTop: 64,
     paddingBottom: 24,
@@ -285,7 +417,7 @@ const styles = StyleSheet.create({
     maxWidth: 340,
   },
 
-  // Footer section
+  // ── Footer ────────────────────────────────────────────────────
   footer: {
     alignItems: "center",
     paddingVertical: 32,

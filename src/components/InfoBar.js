@@ -1,5 +1,10 @@
+/**
+ * InfoBar — row of info pills showing location, weather, and season.
+ * The location pill is a tappable link that opens the region picker.
+ */
+
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { COLORS, FONTS } from "../utils/theme";
 import { getSeasonInfo } from "../utils/season";
 
@@ -11,15 +16,21 @@ function getWeatherEmoji(temp) {
   return "🥶";
 }
 
-export default function InfoBar({ locationName, weather, month }) {
+export default function InfoBar({ locationName, weather, month, onLocationPress }) {
   const season = getSeasonInfo(month);
 
   return (
     <View style={styles.row}>
-      <View style={styles.pill}>
+      {/* Location pill — tappable so users can change their region */}
+      <TouchableOpacity
+        style={[styles.pill, styles.locationPill]}
+        activeOpacity={0.6}
+        onPress={onLocationPress}
+      >
         <Text style={styles.pillText}>📍 </Text>
-        <Text style={styles.pillBold}>{locationName}</Text>
-      </View>
+        <Text style={styles.locationText}>{locationName}</Text>
+        <Text style={styles.chevron}> ▾</Text>
+      </TouchableOpacity>
 
       {weather && (
         <View style={styles.pill}>
@@ -44,17 +55,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 10,
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 16,
   },
   pill: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.7)",
+    backgroundColor: "rgba(255,255,255,0.75)",
     paddingVertical: 10,
     paddingHorizontal: 18,
     borderRadius: 50,
     borderWidth: 1,
-    borderColor: "rgba(45,106,79,0.12)",
+    borderColor: "rgba(255,107,53,0.15)",
+  },
+  // Location pill has a slightly different style to hint that it's interactive
+  locationPill: {
+    borderColor: COLORS.accent,
+    borderWidth: 1.5,
   },
   pillText: {
     fontSize: 13,
@@ -64,5 +80,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
     color: COLORS.textSecondary,
+  },
+  // Underlined + accent-colored to look like a tappable link
+  locationText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: COLORS.accent,
+    textDecorationLine: "underline",
+  },
+  // Small down-arrow to signal a dropdown/picker
+  chevron: {
+    fontSize: 11,
+    color: COLORS.accent,
   },
 });
