@@ -33,6 +33,7 @@
       "package": "com.yourname.fruitforecast",
       "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
     },
+    "platforms": ["ios", "android", "web"],
     "plugins": [
       [
         "expo-location",

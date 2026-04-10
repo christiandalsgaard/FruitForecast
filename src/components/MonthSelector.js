@@ -6,7 +6,7 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
-import { MONTH_ABBR } from "../data/produce";
+import { MONTH_ABBR, MONTH_NAMES } from "../data/produce";
 import { COLORS, FONTS } from "../utils/theme";
 
 export default function MonthSelector({ selectedMonth, onSelect }) {
@@ -15,10 +15,7 @@ export default function MonthSelector({ selectedMonth, onSelect }) {
       <View style={styles.header}>
         <Text style={styles.label}>MONTH</Text>
         <Text style={styles.currentMonth}>
-          {[
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December",
-          ][selectedMonth]}
+          {MONTH_NAMES[selectedMonth]}
         </Text>
       </View>
       <ScrollView

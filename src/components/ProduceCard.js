@@ -37,7 +37,9 @@ export default function ProduceCard({
 
   const label = getSeasonLabel(score);
   const color = getScoreColor(score);
-  const [bg1, bg2] = getScoreBgColors(score);
+  // bg2 (gradient end color) is available but only used if LinearGradient is
+  // added later — destructure just bg1 for now.
+  const [bg1] = getScoreBgColors(score);
 
   const toggleExpand = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);

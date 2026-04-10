@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   View,
   Text,
   FlatList,
   StyleSheet,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import * as Location from "expo-location";
 import { StatusBar } from "expo-status-bar";
@@ -28,9 +29,22 @@ export default function HomeScreen() {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Location is fetched ONCE on mount — not on every month change.
+  // The original code had [month] as a dep, which re-requested location
+  // permissions every time the user tapped a different month. Weather is
+  // calculated from the actual current month, not the selected display month.
   useEffect(() => {
     (async () => {
       try {
+        // Web: expo-location hangs indefinitely waiting for a browser permission
+        // dialog that never appears in some environments. Skip it and use defaults.
+        if (Platform.OS === "web") {
+          setLocationName("Default region");
+          setWeather({ temp: 62, humidity: 55 });
+          setLoading(false);
+          return;
+        }
+
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== "granted") {
           setLocationName("Location unavailable");
@@ -44,10 +58,10 @@ export default function HomeScreen() {
         });
         const { latitude, longitude } = loc.coords;
 
-        setClimateShift(getClimateShift(latitude));
-        setLocationName(getLocationName(latitude, longitude));
-
-        // Simulate weather from latitude & month
+        // Use the real current month for weather, not the selected display month.
+        // The user can browse different months for seasonal data, but weather
+        // should always reflect current conditions.
+        const currentMonth = new Date().getMonth();
         const baseTemps =
           latitude > 40
             ? [28, 32, 42, 55, 65, 75, 82, 80, 70, 58, 44, 32]
@@ -55,7 +69,10 @@ export default function HomeScreen() {
             ? [52, 55, 62, 70, 78, 86, 90, 89, 84, 74, 62, 54]
             : [70, 72, 75, 78, 82, 85, 87, 87, 85, 80, 75, 71];
         const temp =
-          baseTemps[month] + Math.round((Math.random() - 0.5) * 8);
+          baseTemps[currentMonth] + Math.round((Math.random() - 0.5) * 8);
+
+        setClimateShift(getClimateShift(latitude));
+        setLocationName(getLocationName(latitude, longitude));
         setWeather({ temp, humidity: 40 + Math.round(Math.random() * 30) });
       } catch {
         setLocationName("Default region");
@@ -63,21 +80,30 @@ export default function HomeScreen() {
       }
       setLoading(false);
     })();
-  }, [month]);
+  }, []); // Empty deps — location fetched once, not on every month change
 
-  // Compute scored/sorted list
-  const scoredProduce = PRODUCE_DB.filter(
-    (item) => filter === "all" || item.type === filter,
-  )
-    .map((item) => ({
-      ...item,
-      score: getSeasonScore(item, month, climateShift),
-    }))
-    .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+  // Compute scored and sorted produce list whenever month, filter, or climate changes
+  const scoredProduce = useMemo(
+    () =>
+      PRODUCE_DB.filter((item) => filter === "all" || item.type === filter)
+        .map((item) => ({
+          ...item,
+          score: getSeasonScore(item, month, climateShift),
+        }))
+        .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name)),
+    [month, filter, climateShift],
+  );
 
-  const peakCount = scoredProduce.filter((i) => i.score === 100).length;
-  const inSeasonCount = scoredProduce.filter((i) => i.score >= 60).length;
+  const peakCount = useMemo(
+    () => scoredProduce.filter((i) => i.score === 100).length,
+    [scoredProduce],
+  );
+  const inSeasonCount = useMemo(
+    () => scoredProduce.filter((i) => i.score >= 60).length,
+    [scoredProduce],
+  );
 
+  // Stable render function for FlatList — only recreates when month or climate changes
   const renderItem = useCallback(
     ({ item, index }) => (
       <ProduceCard
@@ -93,47 +119,51 @@ export default function HomeScreen() {
 
   const keyExtractor = useCallback((item) => item.id, []);
 
-  const ListHeader = () => (
-    <>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.tagline}>FRESH · LOCAL · SEASONAL</Text>
-        <Text style={styles.title}>Fruit Forecast</Text>
-        <View style={styles.divider} />
-        <Text style={styles.subtitle}>
-          Discover what's freshest at your supermarket based on your location
-          and the time of year
-        </Text>
-      </View>
+  // Memoize header and footer elements so FlatList doesn't remount them on
+  // every render. Defining them as inline arrow functions inside the component
+  // produces a new function reference each render, which FlatList treats as a
+  // new component type — causing unnecessary remounts.
+  const listHeader = useMemo(
+    () => (
+      <>
+        <View style={styles.header}>
+          <Text style={styles.tagline}>FRESH · LOCAL · SEASONAL</Text>
+          <Text style={styles.title}>Fruit Forecast</Text>
+          <View style={styles.divider} />
+          <Text style={styles.subtitle}>
+            Discover what's freshest at your supermarket based on your location
+            and the time of year
+          </Text>
+        </View>
 
-      {/* Info pills */}
-      <InfoBar locationName={locationName} weather={weather} month={month} />
-
-      {/* Month selector */}
-      <MonthSelector selectedMonth={month} onSelect={setMonth} />
-
-      {/* Filter + stats */}
-      <FilterBar
-        filter={filter}
-        onFilterChange={setFilter}
-        peakCount={peakCount}
-        inSeasonCount={inSeasonCount}
-      />
-    </>
+        <InfoBar locationName={locationName} weather={weather} month={month} />
+        <MonthSelector selectedMonth={month} onSelect={setMonth} />
+        <FilterBar
+          filter={filter}
+          onFilterChange={setFilter}
+          peakCount={peakCount}
+          inSeasonCount={inSeasonCount}
+        />
+      </>
+    ),
+    [locationName, weather, month, filter, peakCount, inSeasonCount],
   );
 
-  const ListFooter = () => (
-    <View style={styles.footer}>
-      <Text style={styles.footerText}>
-        Fruit Forecast · Seasonal produce guide
-      </Text>
-      <Text style={styles.footerText}>
-        Data based on typical North American growing seasons
-      </Text>
-      <Text style={[styles.footerText, { marginTop: 6 }]}>
-        Tap any item to view its season calendar & shopping tips
-      </Text>
-    </View>
+  const listFooter = useMemo(
+    () => (
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>
+          Fruit Forecast · Seasonal produce guide
+        </Text>
+        <Text style={styles.footerText}>
+          Data based on typical North American growing seasons
+        </Text>
+        <Text style={[styles.footerText, { marginTop: 6 }]}>
+          Tap any item to view its season calendar & shopping tips
+        </Text>
+      </View>
+    ),
+    [],
   );
 
   if (loading) {
@@ -145,6 +175,30 @@ export default function HomeScreen() {
     );
   }
 
+  // Web layout: FlatList requires an internal scroll container with a fixed height,
+  // which is unreliable across browsers. Instead, render items in a plain View and
+  // let the page scroll naturally (body overflow is set to auto in App.js).
+  if (Platform.OS === "web") {
+    return (
+      <View style={styles.screenWeb}>
+        <StatusBar style="dark" />
+        {listHeader}
+        {scoredProduce.map((item, index) => (
+          <ProduceCard
+            key={item.id}
+            item={item}
+            rank={index + 1}
+            score={item.score}
+            currentMonth={month}
+            climateShift={climateShift}
+          />
+        ))}
+        {listFooter}
+      </View>
+    );
+  }
+
+  // Native (iOS/Android): FlatList with virtualization for smooth scrolling
   return (
     <View style={styles.screen}>
       <StatusBar style="dark" />
@@ -152,8 +206,8 @@ export default function HomeScreen() {
         data={scoredProduce}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
-        ListHeaderComponent={ListHeader}
-        ListFooterComponent={ListFooter}
+        ListHeaderComponent={listHeader}
+        ListFooterComponent={listFooter}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         initialNumToRender={12}
@@ -165,9 +219,16 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  // Native screen: flex: 1 fills the safe area, FlatList scrolls internally
   screen: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  // Web screen: no fixed height — grows with content and lets the page scroll
+  screenWeb: {
+    backgroundColor: COLORS.background,
+    paddingBottom: 40,
+    minHeight: "100vh",
   },
   listContent: {
     paddingBottom: 40,
@@ -178,6 +239,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: COLORS.background,
     gap: 16,
+    minHeight: "100vh",
   },
   loadingText: {
     fontSize: 15,
@@ -185,7 +247,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.serif,
   },
 
-  // Header
+  // Header section
   header: {
     paddingTop: 64,
     paddingBottom: 24,
@@ -223,7 +285,7 @@ const styles = StyleSheet.create({
     maxWidth: 340,
   },
 
-  // Footer
+  // Footer section
   footer: {
     alignItems: "center",
     paddingVertical: 32,
