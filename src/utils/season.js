@@ -36,10 +36,10 @@ export function getSeasonScore(item, monthIndex, climateShift = 0) {
 }
 
 export function getSeasonLabel(score) {
-  if (score === 100) return "Peak Season";
-  if (score >= 60) return "In Season";
+  if (score >= 90) return "Peak Season";
+  if (score >= 70) return "In Season";
   if (score >= 50) return "Coming Soon";
-  if (score >= 25) return "Off Season";
+  if (score >= 30) return "Off Season";
   return "Out of Season";
 }
 

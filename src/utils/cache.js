@@ -24,6 +24,7 @@ export const TTL = {
   MARKETS: 24 * 60 * 60 * 1000,  // 24 hours — market schedules update
   RECIPES: 6 * 60 * 60 * 1000,   // 6 hours — recipe suggestions
   FAVORITES: Infinity,            // Never expires — user data
+  SOURCE_WEATHER: 6 * 60 * 60 * 1000, // 6 hours — source region weather anomalies
 };
 
 /**

@@ -1,10 +1,19 @@
 /**
  * ProduceCard — expandable card showing a produce item's season status,
- * shopping tips, season calendar, and a favorite button.
+ * source regions, score breakdown, weather impact, shopping tips,
+ * season calendar, and a favorite button.
  *
  * Tapping the card expands it to show detailed info. The heart button
  * in the top-right lets users favorite items for push notifications.
  * All taps are tracked via analytics.
+ *
+ * The expanded section now includes:
+ *   1. SHOPPING TIP — existing
+ *   2. WHERE IT'S SOURCED — flag + region name + individual score bar
+ *   3. SCORE BREAKDOWN — base score, weather adjustment, final score
+ *   4. Weather impact banner — conditional, shown when |adjustment| >= 5
+ *   5. SEASON CALENDAR — 12-month bar chart
+ *   6. Legend — color key for the calendar
  */
 
 import React, { useState } from "react";
@@ -18,7 +27,8 @@ import {
   UIManager,
 } from "react-native";
 import { MONTH_NAMES } from "../data/produce";
-import { getSeasonScore, getSeasonLabel } from "../utils/season";
+import { getSeasonLabel } from "../utils/season";
+import { getCalendarScore } from "../utils/scoring";
 import {
   COLORS,
   FONTS,
@@ -41,22 +51,30 @@ export default function ProduceCard({
   item,
   rank,
   score,
+  baseScore,
+  weatherAdjustment,
+  sourceDetails,
   currentMonth,
   climateShift,
+  marketZone,
+  sourceWeatherMap,
 }) {
   const [expanded, setExpanded] = useState(false);
 
   const label = getSeasonLabel(score);
   const color = getScoreColor(score);
-  // bg2 (gradient end color) available if LinearGradient is added later
   const [bg1] = getScoreBgColors(score);
+
+  // Whether we have meaningful source data to display
+  const hasSources = sourceDetails && sourceDetails.length > 0;
+  // Whether weather data has loaded (adjustment !== 0 or sources have weatherNote)
+  const hasWeatherData = hasSources && sourceDetails.some((s) => s.weatherNote !== null);
 
   const toggleExpand = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpanded(!expanded);
 
-    // Track produce taps for analytics — helps understand which items
-    // users are most interested in.
+    // Track produce taps for analytics
     if (!expanded) {
       track(EVENTS.PRODUCE_TAP, {
         produce: item.name,
@@ -74,7 +92,7 @@ export default function ProduceCard({
         styles.card,
         {
           backgroundColor: bg1,
-          borderColor: score === 100 ? COLORS.peakCardBorder : COLORS.cardBorder,
+          borderColor: score >= 90 ? COLORS.peakCardBorder : COLORS.cardBorder,
         },
       ]}
     >
@@ -125,6 +143,8 @@ export default function ProduceCard({
             <Text style={[styles.scoreLabel, { color }]}>{label}</Text>
             <FavoriteButton produceId={item.id} climateShift={climateShift} />
           </View>
+          {/* Numeric score displayed prominently */}
+          <Text style={[styles.scoreNumber, { color }]}>{score}</Text>
           <View style={styles.scoreBarBg}>
             <View
               style={[styles.scoreBar, { width: `${score}%`, backgroundColor: color }]}
@@ -136,7 +156,7 @@ export default function ProduceCard({
       {/* Expanded detail section */}
       {expanded && (
         <View style={styles.expandedArea}>
-          {/* Shopping tip */}
+          {/* ── 1. Shopping tip ──────────────────────────────────── */}
           {item.tips && (
             <View style={styles.tipContainer}>
               <Text style={styles.sectionTitle}>SHOPPING TIP</Text>
@@ -144,11 +164,103 @@ export default function ProduceCard({
             </View>
           )}
 
-          {/* Season calendar — 12 bars showing peak/off months */}
+          {/* ── 2. Source regions ────────────────────────────────── */}
+          {hasSources && (
+            <View style={styles.sourceSection}>
+              <Text style={styles.sectionTitle}>WHERE IT'S SOURCED</Text>
+              {sourceDetails.map((src, i) => (
+                <View key={`${src.region}-${i}`} style={styles.sourceRow}>
+                  {/* Flag + region name */}
+                  <View style={styles.sourceNameArea}>
+                    <Text style={styles.sourceFlag}>{src.flag}</Text>
+                    <Text style={styles.sourceRegion}>{src.region}</Text>
+                  </View>
+                  {/* Individual source score bar */}
+                  <View style={styles.sourceScoreArea}>
+                    <Text style={[styles.sourceScore, { color: getScoreColor(src.score) }]}>
+                      {src.score}
+                    </Text>
+                    <View style={styles.sourceBarBg}>
+                      <View
+                        style={[
+                          styles.sourceBar,
+                          {
+                            width: `${src.score}%`,
+                            backgroundColor: getScoreColor(src.score),
+                          },
+                        ]}
+                      />
+                    </View>
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* ── 3. Score breakdown ───────────────────────────────── */}
+          {hasSources && (
+            <View style={styles.breakdownSection}>
+              <Text style={styles.sectionTitle}>SCORE BREAKDOWN</Text>
+              <View style={styles.breakdownRow}>
+                {/* Base seasonal score */}
+                <View style={styles.breakdownItem}>
+                  <Text style={styles.breakdownLabel}>Base</Text>
+                  <Text style={styles.breakdownValue}>{baseScore}</Text>
+                </View>
+
+                {/* Weather adjustment */}
+                <View style={styles.breakdownItem}>
+                  <Text style={styles.breakdownLabel}>Weather</Text>
+                  {hasWeatherData ? (
+                    <Text
+                      style={[
+                        styles.breakdownValue,
+                        {
+                          color:
+                            weatherAdjustment > 0
+                              ? COLORS.weatherPositiveText
+                              : weatherAdjustment < 0
+                                ? COLORS.weatherNegativeText
+                                : COLORS.textMuted,
+                        },
+                      ]}
+                    >
+                      {weatherAdjustment > 0 ? "+" : ""}
+                      {weatherAdjustment}
+                    </Text>
+                  ) : (
+                    <Text style={[styles.breakdownValue, { color: COLORS.textFaint, fontSize: 10 }]}>
+                      loading…
+                    </Text>
+                  )}
+                </View>
+
+                {/* Equals sign */}
+                <Text style={styles.breakdownEquals}>=</Text>
+
+                {/* Final score */}
+                <View style={styles.breakdownItem}>
+                  <Text style={styles.breakdownLabel}>Final</Text>
+                  <Text style={[styles.breakdownValueFinal, { color }]}>
+                    {score}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          )}
+
+          {/* ── 4. Weather impact banner (conditional) ──────────── */}
+          {hasSources &&
+            hasWeatherData &&
+            Math.abs(weatherAdjustment) >= 5 &&
+            renderWeatherBanner(sourceDetails, weatherAdjustment)}
+
+          {/* ── 5. Season calendar — 12 bars showing score per month ── */}
           <Text style={styles.sectionTitle}>SEASON CALENDAR</Text>
           <View style={styles.calendarRow}>
             {MONTH_NAMES.map((m, i) => {
-              const mScore = getSeasonScore(item, i, climateShift);
+              // Use the new scoring engine for calendar bars
+              const mScore = getCalendarScore(item, i, marketZone, climateShift, sourceWeatherMap);
               const barColor = getCalendarBarColor(mScore);
               const isCurrent = i === currentMonth;
               return (
@@ -177,7 +289,7 @@ export default function ProduceCard({
             })}
           </View>
 
-          {/* Color legend for the calendar bars */}
+          {/* ── 6. Color legend for the calendar bars ────────────── */}
           <View style={styles.legend}>
             {[
               { color: COLORS.calPeak, label: "Peak" },
@@ -194,6 +306,32 @@ export default function ProduceCard({
         </View>
       )}
     </TouchableOpacity>
+  );
+}
+
+// ── Weather impact banner ───────────────────────────────────────
+// Shows a colored banner with the weather narrative when the
+// weather adjustment is significant (>= 5 points).
+function renderWeatherBanner(sourceDetails, weatherAdjustment) {
+  // Collect unique weather notes from all sources
+  const notes = sourceDetails
+    .filter((s) => s.weatherNote)
+    .map((s) => s.weatherNote);
+  const uniqueNotes = [...new Set(notes)];
+  if (uniqueNotes.length === 0) return null;
+
+  const isPositive = weatherAdjustment > 0;
+  const bannerBg = isPositive ? COLORS.weatherPositiveBg : COLORS.weatherNegativeBg;
+  const bannerText = isPositive ? COLORS.weatherPositiveText : COLORS.weatherNegativeText;
+  const icon = isPositive ? "✓" : "⚠";
+
+  return (
+    <View style={[styles.weatherBanner, { backgroundColor: bannerBg }]}>
+      <Text style={[styles.weatherBannerIcon, { color: bannerText }]}>{icon}</Text>
+      <Text style={[styles.weatherBannerText, { color: bannerText }]}>
+        {uniqueNotes.join(". ")}
+      </Text>
+    </View>
   );
 }
 
@@ -253,7 +391,8 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
     marginTop: 2,
   },
-  // Score area — label, heart, and progress bar
+
+  // ── Score area — label, numeric score, heart, and progress bar ──
   scoreArea: {
     width: 110,
     alignItems: "flex-end",
@@ -262,12 +401,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    marginBottom: 4,
+    marginBottom: 2,
   },
   scoreLabel: {
     fontSize: 10,
     fontWeight: "700",
     fontFamily: FONTS.mono,
+  },
+  scoreNumber: {
+    fontSize: 22,
+    fontWeight: "700",
+    fontFamily: FONTS.mono,
+    marginBottom: 3,
   },
   scoreBarBg: {
     width: "100%",
@@ -281,7 +426,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
 
-  // Expanded detail section
+  // ── Expanded detail section ────────────────────────────────────
   expandedArea: {
     marginTop: 14,
     paddingTop: 14,
@@ -304,6 +449,121 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontFamily: FONTS.serif,
   },
+
+  // ── Source regions ─────────────────────────────────────────────
+  sourceSection: {
+    marginBottom: 16,
+  },
+  sourceRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  sourceNameArea: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    flex: 1,
+  },
+  sourceFlag: {
+    fontSize: 16,
+  },
+  sourceRegion: {
+    fontSize: 13,
+    color: COLORS.text,
+    fontFamily: FONTS.serif,
+    fontWeight: "500",
+  },
+  sourceScoreArea: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    width: 90,
+  },
+  sourceScore: {
+    fontSize: 13,
+    fontWeight: "700",
+    fontFamily: FONTS.mono,
+    width: 28,
+    textAlign: "right",
+  },
+  sourceBarBg: {
+    flex: 1,
+    height: 4,
+    backgroundColor: "rgba(0,0,0,0.06)",
+    borderRadius: 2,
+    overflow: "hidden",
+  },
+  sourceBar: {
+    height: "100%",
+    borderRadius: 2,
+  },
+
+  // ── Score breakdown ───────────────────────────────────────────
+  breakdownSection: {
+    marginBottom: 16,
+  },
+  breakdownRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 12,
+    backgroundColor: COLORS.breakdownBg,
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  breakdownItem: {
+    alignItems: "center",
+    gap: 2,
+  },
+  breakdownLabel: {
+    fontSize: 9,
+    letterSpacing: 1,
+    color: COLORS.textMuted,
+    fontFamily: FONTS.mono,
+    textTransform: "uppercase",
+  },
+  breakdownValue: {
+    fontSize: 20,
+    fontWeight: "700",
+    fontFamily: FONTS.mono,
+    color: COLORS.text,
+  },
+  breakdownValueFinal: {
+    fontSize: 24,
+    fontWeight: "700",
+    fontFamily: FONTS.mono,
+  },
+  breakdownEquals: {
+    fontSize: 18,
+    color: COLORS.textFaint,
+    fontFamily: FONTS.mono,
+    marginTop: 10,
+  },
+
+  // ── Weather impact banner ─────────────────────────────────────
+  weatherBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  weatherBannerIcon: {
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  weatherBannerText: {
+    flex: 1,
+    fontSize: 12,
+    fontFamily: FONTS.serif,
+    lineHeight: 17,
+  },
+
+  // ── Calendar ──────────────────────────────────────────────────
   calendarRow: {
     flexDirection: "row",
     gap: 3,

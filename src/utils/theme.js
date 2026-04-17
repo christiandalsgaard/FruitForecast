@@ -61,6 +61,17 @@ export const COLORS = {
   separator: "rgba(61,35,21,0.08)",
   cardBorder: "rgba(61,35,21,0.06)",
   peakCardBorder: "rgba(46,125,50,0.25)",  // Green glow for peak cards
+
+  // ── Weather impact colors ─────────────────────────────────────
+  weatherNegativeBg: "#FFF3E0",    // Light orange for negative weather impact
+  weatherNegativeText: "#E65100",  // Deep orange text
+  weatherPositiveBg: "#E8F5E9",   // Light green for positive weather impact
+  weatherPositiveText: "#2E7D32",  // Deep green text
+  weatherNeutralBg: "#F5F5F5",    // Light grey for neutral
+  weatherNeutralText: "#757575",  // Grey text
+
+  // ── Score breakdown colors ────────────────────────────────────
+  breakdownBg: "rgba(0,0,0,0.03)",
 };
 
 // Rounded, friendly fonts. Avenir Next (iOS) and Nunito (web) have a soft,
@@ -80,25 +91,25 @@ export const FONTS = {
 };
 
 export function getScoreColor(score) {
-  if (score === 100) return COLORS.peak;
-  if (score >= 60) return COLORS.inSeason;
+  if (score >= 90) return COLORS.peak;
+  if (score >= 70) return COLORS.inSeason;
   if (score >= 50) return COLORS.comingSoon;
-  if (score >= 25) return COLORS.offSeason;
+  if (score >= 30) return COLORS.offSeason;
   return COLORS.outOfSeason;
 }
 
 export function getScoreBgColors(score) {
-  if (score === 100) return [COLORS.peakBg, COLORS.peakBg2];
-  if (score >= 60) return [COLORS.inSeasonBg, COLORS.inSeasonBg2];
+  if (score >= 90) return [COLORS.peakBg, COLORS.peakBg2];
+  if (score >= 70) return [COLORS.inSeasonBg, COLORS.inSeasonBg2];
   if (score >= 50) return [COLORS.comingSoonBg, COLORS.comingSoonBg2];
-  if (score >= 25) return [COLORS.offSeasonBg, COLORS.offSeasonBg2];
+  if (score >= 30) return [COLORS.offSeasonBg, COLORS.offSeasonBg2];
   return [COLORS.outBg, COLORS.outBg2];
 }
 
 export function getCalendarBarColor(score) {
-  if (score === 100) return COLORS.calPeak;
-  if (score >= 60) return COLORS.calInSeason;
+  if (score >= 90) return COLORS.calPeak;
+  if (score >= 70) return COLORS.calInSeason;
   if (score >= 50) return COLORS.calComing;
-  if (score >= 25) return COLORS.calOff;
+  if (score >= 30) return COLORS.calOff;
   return COLORS.calOut;
 }
