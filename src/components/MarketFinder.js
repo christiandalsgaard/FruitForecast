@@ -1,9 +1,9 @@
 /**
  * MarketFinder — collapsible section showing nearby farmer's markets.
  *
- * Fetches markets from the USDA API when expanded. Each market card
- * shows name, distance, schedule, and available products. Tapping a
- * market opens directions in the default maps app.
+ * Fetches markets from OpenStreetMap via the Overpass API when expanded.
+ * Each market card shows name, distance, schedule, and address.
+ * Tapping a market opens directions in the default maps app.
  */
 
 import React, { useState, useEffect } from "react";
@@ -26,7 +26,7 @@ export default function MarketFinder({ latitude, longitude }) {
   const [error, setError] = useState(null);
 
   // Fetch markets when the user expands the section — lazy loading
-  // so we don't hit the USDA API unless the user actually wants this.
+  // so we don't hit the Overpass API unless the user actually wants this.
   useEffect(() => {
     if (!expanded || markets !== null || !latitude || !longitude) return;
 
@@ -43,16 +43,18 @@ export default function MarketFinder({ latitude, longitude }) {
       });
   }, [expanded, latitude, longitude, markets]);
 
-  // Open directions in the device's maps app
-  const openDirections = (address) => {
-    const encoded = encodeURIComponent(address);
+  // Open directions — use coords for precise navigation, fall back to address
+  const openDirections = (market) => {
     const url = Platform.select({
-      ios: `maps:?q=${encoded}`,
-      android: `geo:0,0?q=${encoded}`,
-      web: `https://www.google.com/maps/search/?api=1&query=${encoded}`,
+      ios: `maps:?ll=${market.lat},${market.lon}&q=${encodeURIComponent(market.name)}`,
+      android: `geo:${market.lat},${market.lon}?q=${encodeURIComponent(market.name)}`,
+      web: `https://www.google.com/maps/search/?api=1&query=${market.lat},${market.lon}`,
     });
     Linking.openURL(url).catch(() => {});
   };
+
+  // Convert km to miles for display
+  const kmToMi = (km) => (km * 0.621371).toFixed(1);
 
   return (
     <View style={styles.container}>
@@ -91,29 +93,39 @@ export default function MarketFinder({ latitude, longitude }) {
                 key={market.id}
                 style={styles.marketCard}
                 activeOpacity={0.7}
-                onPress={() => openDirections(market.address)}
+                onPress={() => openDirections(market)}
               >
                 <View style={styles.marketHeader}>
                   <Text style={styles.marketName}>{market.name}</Text>
-                  {market.distance && (
+                  {market.distance != null && (
                     <Text style={styles.distance}>
-                      {market.distance.toFixed(1)} mi
+                      {kmToMi(market.distance)} mi
                     </Text>
                   )}
                 </View>
 
-                <Text style={styles.marketAddress}>{market.address}</Text>
-                <Text style={styles.marketSchedule}>{market.schedule}</Text>
+                {/* Address — may be null if OSM doesn't have addr tags */}
+                {market.address && (
+                  <Text style={styles.marketAddress}>{market.address}</Text>
+                )}
 
-                {/* Product tags — show what this market sells */}
-                {market.products.length > 0 && (
-                  <View style={styles.productRow}>
-                    {market.products.slice(0, 6).map((product) => (
-                      <View key={product} style={styles.productTag}>
-                        <Text style={styles.productText}>{product}</Text>
-                      </View>
-                    ))}
-                  </View>
+                {/* Opening hours if available */}
+                {market.schedule && (
+                  <Text style={styles.marketSchedule}>{market.schedule}</Text>
+                )}
+
+                {/* Website link if available */}
+                {market.website && (
+                  <Text
+                    style={styles.websiteLink}
+                    onPress={(e) => {
+                      e.stopPropagation?.();
+                      Linking.openURL(market.website).catch(() => {});
+                    }}
+                    numberOfLines={1}
+                  >
+                    {market.website.replace(/^https?:\/\/(www\.)?/, "")}
+                  </Text>
                 )}
 
                 <Text style={styles.directionsHint}>Tap for directions →</Text>
@@ -225,24 +237,13 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.mono,
     marginBottom: 8,
   },
-  // Product category tags
-  productRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 4,
-    marginBottom: 8,
-  },
-  productTag: {
-    backgroundColor: COLORS.vegBadgeBg,
-    paddingVertical: 2,
-    paddingHorizontal: 8,
-    borderRadius: 50,
-  },
-  productText: {
-    fontSize: 9,
-    color: COLORS.vegBadgeText,
-    fontWeight: "600",
+  // Website link shown below schedule
+  websiteLink: {
+    fontSize: 11,
+    color: COLORS.accent,
     fontFamily: FONTS.mono,
+    marginBottom: 6,
+    textDecorationLine: "underline",
   },
   directionsHint: {
     fontSize: 11,
