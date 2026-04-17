@@ -16,8 +16,9 @@
  * Weights are relative (not normalized to 1.0). A source with weight 0.8
  * contributes twice as much as one with weight 0.4 during blending.
  *
- * Three market zones are populated: US_NORTHEAST, US_WEST, NORTHERN_EUROPE.
- * Other zones fall back to the top-level peak/shoulder arrays with climate shift.
+ * All 9 market zones are populated: US_NORTHEAST, US_SOUTHEAST, US_WEST, US_CENTRAL,
+ *   NORTHERN_EUROPE, OCEANIA, SOUTH_AMERICA, EAST_ASIA, SOUTHERN_AFRICA.
+ * The top-level peak/shoulder arrays serve as a fallback for any unmapped zones.
  */
 
 export const PRODUCE_DB = [
@@ -53,6 +54,36 @@ export const PRODUCE_DB = [
         // Morocco fills deep winter
         { region: "Morocco", flag: "🇲🇦", lat: 33.6, lon: -7.6, peak: [11, 0, 1], shoulder: [10, 2], weight: 0.3 },
       ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 28, lon: -82, peak: [11,0,1,2,3], shoulder: [4,10], weight: 0.5 },
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [2,3,4,5,9,10], shoulder: [1,6,11], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 30.5, lon: -115.9, peak: [11,0,1,2], shoulder: [10,3], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [2,3,4,5,9,10], shoulder: [1,6,11], weight: 0.5 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [5,6], shoulder: [4,7], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 30.5, lon: -115.9, peak: [11,0,1,2], shoulder: [10,3], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [9,10,11,0], shoulder: [8,1], weight: 0.5 },
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [6,7,8], shoulder: [5,9], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [10,11,0], shoulder: [9,1], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "São Paulo", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.5 },
+        { region: "Chile", flag: "🇨🇱", lat: -35, lon: -71.2, peak: [9,10,11,0], shoulder: [8,1], weight: 0.3 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [9,10,11], shoulder: [8,0], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [3,4,5], shoulder: [2,6], weight: 0.5 },
+        { region: "South Korea", flag: "🇰🇷", lat: 35.2, lon: 128.7, peak: [4,5,6], shoulder: [3,7], weight: 0.3 },
+        { region: "USA (California)", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [2,3,4,5], shoulder: [1,6], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [9,10,11], shoulder: [8,0], weight: 0.5 },
+        { region: "Limpopo", flag: "🇿🇦", lat: -23.4, lon: 29.4, peak: [5,6,7,8], shoulder: [4,9], weight: 0.3 },
+        { region: "Egypt", flag: "🇪🇬", lat: 30, lon: 31.2, peak: [0,1,2,3], shoulder: [4,11], weight: 0.2 },
+      ],
     },
   },
 
@@ -77,6 +108,35 @@ export const PRODUCE_DB = [
         { region: "Spain", flag: "🇪🇸", lat: 37.2, lon: -6.9, peak: [3, 4, 5], shoulder: [2, 6], weight: 0.3 },
         { region: "Chile", flag: "🇨🇱", lat: -35.0, lon: -71.2, peak: [11, 0, 1], shoulder: [10, 2], weight: 0.3 },
       ],
+      US_SOUTHEAST: [
+        { region: "Southeast US", flag: "🇺🇸", lat: 31.2, lon: -82.4, peak: [4,5,6], shoulder: [3,7], weight: 0.5 },
+        { region: "Florida", flag: "🇺🇸", lat: 28, lon: -82, peak: [3,4], shoulder: [2,5], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -35, lon: -71.2, peak: [11,0,1], shoulder: [10,2], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "Michigan", flag: "🇺🇸", lat: 43, lon: -86.2, peak: [6,7,8], shoulder: [5,9], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 31.2, lon: -82.4, peak: [4,5], shoulder: [3,6], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -35, lon: -71.2, peak: [11,0,1], shoulder: [10,2], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "New South Wales", flag: "🇦🇺", lat: -33.5, lon: 150, peak: [10,11,0,1], shoulder: [9,2], weight: 0.5 },
+        { region: "Tasmania", flag: "🇦🇺", lat: -42, lon: 147, peak: [0,1], shoulder: [11,2], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [11,0,1], shoulder: [10,2], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Chile", flag: "🇨🇱", lat: -35, lon: -71.2, peak: [11,0,1,2], shoulder: [10,3], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -39, lon: -67, peak: [11,0,1], shoulder: [10,2], weight: 0.3 },
+        { region: "Peru", flag: "🇵🇪", lat: -8.1, lon: -79, peak: [6,7,8,9], shoulder: [5,10], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [5,6,7], shoulder: [4,8], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [5,6,7], shoulder: [4,8], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -35, lon: -71.2, peak: [11,0,1], shoulder: [10,2], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [10,11,0,1], shoulder: [9,2], weight: 0.5 },
+        { region: "Zimbabwe", flag: "🇿🇼", lat: -18, lon: 31, peak: [8,9,10], shoulder: [7,11], weight: 0.3 },
+      ],
     },
   },
 
@@ -99,6 +159,33 @@ export const PRODUCE_DB = [
         { region: "Western Europe", flag: "🇪🇺", lat: 51.5, lon: 0.0, peak: [6, 7, 8], shoulder: [5, 9], weight: 0.5 },
         { region: "Spain", flag: "🇪🇸", lat: 37.2, lon: -6.9, peak: [2, 3, 4, 5], shoulder: [1, 6], weight: 0.4 },
         { region: "Morocco", flag: "🇲🇦", lat: 33.6, lon: -7.6, peak: [11, 0, 1], shoulder: [10, 2], weight: 0.2 },
+      ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [4,5,6,9,10], shoulder: [3,7,11], weight: 0.5 },
+        { region: "Mexico", flag: "🇲🇽", lat: 20.7, lon: -103.4, peak: [0,1,2,3], shoulder: [11,4], weight: 0.4 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [4,5,6,9,10], shoulder: [3,7,11], weight: 0.5 },
+        { region: "Mexico", flag: "🇲🇽", lat: 20.7, lon: -103.4, peak: [0,1,2,3], shoulder: [11,4], weight: 0.4 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 42, lon: -85, peak: [6,7], shoulder: [5,8], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Tasmania", flag: "🇦🇺", lat: -42, lon: 147, peak: [11,0,1], shoulder: [10,2], weight: 0.5 },
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [11,0,1], shoulder: [10,2], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [11,0,1], shoulder: [10,2], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Chile", flag: "🇨🇱", lat: -35, lon: -71.2, peak: [11,0,1], shoulder: [10,2], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -39, lon: -67, peak: [11,0,1], shoulder: [10,2], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [5,6,7], shoulder: [4,8], weight: 0.4 },
+        { region: "South Korea", flag: "🇰🇷", lat: 35.2, lon: 128.7, peak: [5,6,7], shoulder: [4,8], weight: 0.3 },
+        { region: "USA (California)", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [9,10], shoulder: [8,11], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [10,11,0], shoulder: [9,1], weight: 0.5 },
+        { region: "Morocco", flag: "🇲🇦", lat: 33.6, lon: -7.6, peak: [2,3,4,5], shoulder: [1,6], weight: 0.3 },
       ],
     },
   },
@@ -123,6 +210,34 @@ export const PRODUCE_DB = [
         { region: "Spain", flag: "🇪🇸", lat: 38.5, lon: -1.0, peak: [4, 5], shoulder: [3, 6], weight: 0.3 },
         { region: "Chile", flag: "🇨🇱", lat: -34.6, lon: -71.0, peak: [11, 0], shoulder: [10, 1], weight: 0.3 },
       ],
+      US_SOUTHEAST: [
+        { region: "Pacific Northwest", flag: "🇺🇸", lat: 47.5, lon: -120.5, peak: [5,6,7], shoulder: [4,8], weight: 0.5 },
+        { region: "California", flag: "🇺🇸", lat: 37.8, lon: -120.3, peak: [4,5], shoulder: [3,6], weight: 0.4 },
+        { region: "Chile", flag: "🇨🇱", lat: -34.6, lon: -71, peak: [11,0], shoulder: [10,1], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "Pacific Northwest", flag: "🇺🇸", lat: 47.5, lon: -120.5, peak: [5,6,7], shoulder: [4,8], weight: 0.5 },
+        { region: "Michigan", flag: "🇺🇸", lat: 44.8, lon: -85.5, peak: [6,7], shoulder: [5,8], weight: 0.4 },
+        { region: "Chile", flag: "🇨🇱", lat: -34.6, lon: -71, peak: [11,0], shoulder: [10,1], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Tasmania", flag: "🇦🇺", lat: -42, lon: 147, peak: [11,0], shoulder: [10,1], weight: 0.5 },
+        { region: "Victoria", flag: "🇦🇺", lat: -37, lon: 145.5, peak: [11,0], shoulder: [10,1], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -45, lon: 169.3, peak: [0,1], shoulder: [11,2], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Chile", flag: "🇨🇱", lat: -34.6, lon: -71, peak: [11,0,1], shoulder: [10,2], weight: 0.6 },
+        { region: "Argentina", flag: "🇦🇷", lat: -39, lon: -67, peak: [11,0], shoulder: [10,1], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 38.3, lon: 140.3, peak: [5,6,7], shoulder: [4,8], weight: 0.5 },
+        { region: "Turkey", flag: "🇹🇷", lat: 40.8, lon: 36.5, peak: [5,6,7], shoulder: [4,8], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -34.6, lon: -71, peak: [11,0], shoulder: [10,1], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [10,11,0], shoulder: [9,1], weight: 0.5 },
+        { region: "Turkey", flag: "🇹🇷", lat: 40.8, lon: 36.5, peak: [5,6,7], shoulder: [4,8], weight: 0.3 },
+      ],
     },
   },
 
@@ -144,6 +259,34 @@ export const PRODUCE_DB = [
         { region: "Spain", flag: "🇪🇸", lat: 38.0, lon: -1.2, peak: [5, 6, 7, 8], shoulder: [4, 9], weight: 0.5 },
         { region: "Italy", flag: "🇮🇹", lat: 41.0, lon: 14.3, peak: [6, 7, 8], shoulder: [5, 9], weight: 0.4 },
         { region: "South Africa", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [11, 0, 1], shoulder: [10, 2], weight: 0.2 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Southeast US", flag: "🇺🇸", lat: 33, lon: -83.6, peak: [5,6,7], shoulder: [4,8], weight: 0.6 },
+        { region: "California", flag: "🇺🇸", lat: 36.7, lon: -119.8, peak: [5,6,7,8], shoulder: [4,9], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -34, lon: -70.7, peak: [11,0,1], shoulder: [10,2], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.7, lon: -119.8, peak: [5,6,7,8], shoulder: [4,9], weight: 0.5 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 33, lon: -83.6, peak: [5,6,7], shoulder: [4,8], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -34, lon: -70.7, peak: [11,0,1], shoulder: [10,2], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -36.5, lon: 145, peak: [11,0,1,2], shoulder: [10,3], weight: 0.6 },
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [11,0,1], shoulder: [10,2], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Chile", flag: "🇨🇱", lat: -34, lon: -70.7, peak: [11,0,1,2], shoulder: [10,3], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [11,0,1], shoulder: [10,2], weight: 0.3 },
+        { region: "Brazil (south)", flag: "🇧🇷", lat: -29, lon: -51, peak: [10,11,0], shoulder: [9,1], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 33.2, lon: 131.6, peak: [6,7,8], shoulder: [5,9], weight: 0.5 },
+        { region: "China", flag: "🇨🇳", lat: 36, lon: 117, peak: [6,7,8], shoulder: [5,9], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -34, lon: -70.7, peak: [11,0,1], shoulder: [10,2], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [10,11,0,1], shoulder: [9,2], weight: 0.6 },
+        { region: "Limpopo", flag: "🇿🇦", lat: -23.4, lon: 29.4, peak: [9,10,11], shoulder: [8,0], weight: 0.3 },
       ],
     },
   },
@@ -168,6 +311,32 @@ export const PRODUCE_DB = [
         { region: "Italy", flag: "🇮🇹", lat: 40.8, lon: 14.3, peak: [6, 7, 8], shoulder: [5, 9], weight: 0.3 },
         { region: "Brazil", flag: "🇧🇷", lat: -12.0, lon: -38.5, peak: [10, 11, 0, 1], shoulder: [9, 2], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 28, lon: -82, peak: [4,5,6,7], shoulder: [3,8], weight: 0.5 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [5,6,7,8], shoulder: [4,9], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24, lon: -104.7, peak: [3,4,5], shoulder: [2,6], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "Texas", flag: "🇺🇸", lat: 30, lon: -97, peak: [5,6,7,8], shoulder: [4,9], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 35.4, lon: -119, peak: [6,7,8], shoulder: [5,9], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24, lon: -104.7, peak: [3,4,5], shoulder: [2,6], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.6 },
+        { region: "New South Wales", flag: "🇦🇺", lat: -33.5, lon: 150, peak: [11,0,1,2], shoulder: [10,3], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil (northeast)", flag: "🇧🇷", lat: -9, lon: -38, peak: [9,10,11,0,1,2], shoulder: [8,3], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [11,0,1,2], shoulder: [10,3], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [6,7,8], shoulder: [5,9], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 34, lon: 113, peak: [5,6,7,8], shoulder: [4,9], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Limpopo", flag: "🇿🇦", lat: -23.4, lon: 29.4, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.6 },
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [10,11,0,1], shoulder: [9,2], weight: 0.3 },
+      ],
     },
   },
 
@@ -189,6 +358,32 @@ export const PRODUCE_DB = [
         { region: "Spain", flag: "🇪🇸", lat: 37.4, lon: -3.7, peak: [6, 7, 8], shoulder: [5, 9], weight: 0.5 },
         { region: "Morocco", flag: "🇲🇦", lat: 33.6, lon: -7.6, peak: [4, 5, 6], shoulder: [3, 7], weight: 0.3 },
         { region: "Brazil", flag: "🇧🇷", lat: -5.8, lon: -35.2, peak: [10, 11, 0, 1], shoulder: [9, 2], weight: 0.2 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 28, lon: -82, peak: [3,4,5,6], shoulder: [2,7], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 33.7, lon: -116.2, peak: [5,6,7,8], shoulder: [4,9], weight: 0.4 },
+        { region: "Central America", flag: "🌎", lat: 14.6, lon: -87, peak: [11,0,1,2], shoulder: [10,3], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 33.7, lon: -116.2, peak: [5,6,7,8], shoulder: [4,9], weight: 0.5 },
+        { region: "Central America", flag: "🌎", lat: 14.6, lon: -87, peak: [11,0,1,2,3], shoulder: [10,4], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24, lon: -104.7, peak: [3,4,5], shoulder: [2,6], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.6 },
+        { region: "Western Australia", flag: "🇦🇺", lat: -31.9, lon: 115.9, peak: [11,0,1,2], shoulder: [10,3], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil (northeast)", flag: "🇧🇷", lat: -5.8, lon: -35.2, peak: [8,9,10,11,0,1], shoulder: [7,2], weight: 0.5 },
+        { region: "Chile", flag: "🇨🇱", lat: -33, lon: -71.6, peak: [11,0,1,2], shoulder: [10,3], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [6,7,8], shoulder: [5,9], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 37, lon: 95, peak: [6,7,8,9], shoulder: [5,10], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Limpopo", flag: "🇿🇦", lat: -23.4, lon: 29.4, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.5 },
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [10,11,0,1], shoulder: [9,2], weight: 0.3 },
       ],
     },
   },
@@ -216,6 +411,35 @@ export const PRODUCE_DB = [
         { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176.0, peak: [2, 3, 4], shoulder: [1, 5], weight: 0.3 },
         { region: "South Africa", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [1, 2, 3, 4], shoulder: [0, 5], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "Washington State", flag: "🇺🇸", lat: 47.4, lon: -120.3, peak: [8,9,10], shoulder: [7,11,0,1,2,3], weight: 0.5 },
+        { region: "Virginia", flag: "🇺🇸", lat: 38.8, lon: -78.5, peak: [8,9,10], shoulder: [7,11], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -35, lon: -71.2, peak: [2,3,4], shoulder: [1,5], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "Washington State", flag: "🇺🇸", lat: 47.4, lon: -120.3, peak: [8,9,10], shoulder: [7,11,0,1,2,3], weight: 0.5 },
+        { region: "Michigan", flag: "🇺🇸", lat: 43, lon: -86.2, peak: [8,9,10], shoulder: [7,11], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -35, lon: -71.2, peak: [2,3,4], shoulder: [1,5], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [1,2,3,4], shoulder: [0,5], weight: 0.5 },
+        { region: "Tasmania", flag: "🇦🇺", lat: -42, lon: 147, peak: [2,3,4], shoulder: [1,5], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [2,3,4], shoulder: [1,5], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Chile", flag: "🇨🇱", lat: -35, lon: -71.2, peak: [2,3,4,5], shoulder: [1,6], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -39, lon: -67, peak: [2,3,4], shoulder: [1,5], weight: 0.3 },
+        { region: "Brazil (south)", flag: "🇧🇷", lat: -29, lon: -51, peak: [1,2,3], shoulder: [0,4], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 39.7, lon: 140.1, peak: [8,9,10,11], shoulder: [7,0], weight: 0.5 },
+        { region: "China", flag: "🇨🇳", lat: 37, lon: 117, peak: [8,9,10], shoulder: [7,11], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [2,3,4], shoulder: [1,5], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [1,2,3,4], shoulder: [0,5], weight: 0.6 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [2,3,4], shoulder: [1,5], weight: 0.2 },
+      ],
     },
   },
 
@@ -238,6 +462,32 @@ export const PRODUCE_DB = [
         { region: "Western Europe", flag: "🇪🇺", lat: 51.0, lon: 3.7, peak: [8, 9, 10], shoulder: [7, 11], weight: 0.5 },
         { region: "South Africa", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [1, 2, 3], shoulder: [0, 4], weight: 0.3 },
         { region: "Argentina", flag: "🇦🇷", lat: -39.0, lon: -67.0, peak: [1, 2, 3], shoulder: [0, 4], weight: 0.2 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Pacific Northwest", flag: "🇺🇸", lat: 46.2, lon: -119.2, peak: [8,9,10], shoulder: [7,11,0], weight: 0.6 },
+        { region: "California", flag: "🇺🇸", lat: 38.5, lon: -121.5, peak: [7,8,9], shoulder: [6,10], weight: 0.3 },
+        { region: "Argentina", flag: "🇦🇷", lat: -39, lon: -67, peak: [1,2,3], shoulder: [0,4], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "Pacific Northwest", flag: "🇺🇸", lat: 46.2, lon: -119.2, peak: [8,9,10], shoulder: [7,11,0], weight: 0.6 },
+        { region: "California", flag: "🇺🇸", lat: 38.5, lon: -121.5, peak: [7,8,9], shoulder: [6,10], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [1,2,3,4], shoulder: [0,5], weight: 0.5 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [2,3,4], shoulder: [1,5], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -39, lon: -67, peak: [1,2,3,4], shoulder: [0,5], weight: 0.5 },
+        { region: "Chile", flag: "🇨🇱", lat: -35, lon: -71.2, peak: [2,3,4], shoulder: [1,5], weight: 0.4 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [8,9,10], shoulder: [7,11], weight: 0.5 },
+        { region: "China", flag: "🇨🇳", lat: 34, lon: 113, peak: [7,8,9,10], shoulder: [6,11], weight: 0.3 },
+        { region: "South Korea", flag: "🇰🇷", lat: 35.2, lon: 128.7, peak: [8,9,10], shoulder: [7,11], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [1,2,3,4], shoulder: [0,5], weight: 0.6 },
+        { region: "Argentina", flag: "🇦🇷", lat: -39, lon: -67, peak: [1,2,3], shoulder: [0,4], weight: 0.2 },
       ],
     },
   },
@@ -263,6 +513,33 @@ export const PRODUCE_DB = [
         { region: "South Africa", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [0, 1, 2, 3], shoulder: [11, 4], weight: 0.3 },
         { region: "Chile", flag: "🇨🇱", lat: -30.0, lon: -71.2, peak: [0, 1, 2, 3], shoulder: [11, 4], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.3, lon: -119.3, peak: [6,7,8,9,10], shoulder: [5,11], weight: 0.6 },
+        { region: "Chile", flag: "🇨🇱", lat: -30, lon: -71.2, peak: [0,1,2,3], shoulder: [11,4], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.3, lon: -119.3, peak: [6,7,8,9,10], shoulder: [5,11], weight: 0.6 },
+        { region: "Chile", flag: "🇨🇱", lat: -30, lon: -71.2, peak: [0,1,2,3], shoulder: [11,4], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -36.5, lon: 145, peak: [0,1,2,3,4], shoulder: [11,5], weight: 0.5 },
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [0,1,2,3], shoulder: [11,4], weight: 0.3 },
+        { region: "USA (California)", flag: "🇺🇸", lat: 36.3, lon: -119.3, peak: [7,8,9], shoulder: [6,10], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Chile", flag: "🇨🇱", lat: -30, lon: -71.2, peak: [0,1,2,3,4], shoulder: [11,5], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -33, lon: -68, peak: [1,2,3,4], shoulder: [0,5], weight: 0.3 },
+        { region: "Brazil (south)", flag: "🇧🇷", lat: -29, lon: -51, peak: [0,1,2], shoulder: [11,3], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35.7, lon: 134, peak: [7,8,9,10], shoulder: [6,11], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 37, lon: 95, peak: [7,8,9,10], shoulder: [6,11], weight: 0.4 },
+        { region: "Chile", flag: "🇨🇱", lat: -30, lon: -71.2, peak: [0,1,2,3], shoulder: [11,4], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [0,1,2,3,4], shoulder: [11,5], weight: 0.7 },
+        { region: "Namibia", flag: "🇳🇦", lat: -28.7, lon: 17.6, peak: [0,1,2,3], shoulder: [11,4], weight: 0.2 },
+      ],
     },
   },
 
@@ -285,6 +562,30 @@ export const PRODUCE_DB = [
         { region: "Spain", flag: "🇪🇸", lat: 39.5, lon: -0.4, peak: [10, 11, 0, 1, 2, 3], shoulder: [9, 4], weight: 0.6 },
         { region: "South Africa", flag: "🇿🇦", lat: -32.4, lon: 19.0, peak: [5, 6, 7, 8], shoulder: [4, 9], weight: 0.3 },
         { region: "Morocco", flag: "🇲🇦", lat: 34.0, lon: -5.0, peak: [11, 0, 1, 2], shoulder: [10, 3], weight: 0.2 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 27.8, lon: -81.6, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.6 },
+        { region: "California", flag: "🇺🇸", lat: 35.4, lon: -119, peak: [11,0,1,2,3], shoulder: [10,4], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 35.4, lon: -119, peak: [11,0,1,2,3], shoulder: [10,4], weight: 0.5 },
+        { region: "Florida", flag: "🇺🇸", lat: 27.8, lon: -81.6, peak: [10,11,0,1,2,3], shoulder: [9,4], weight: 0.4 },
+      ],
+      OCEANIA: [
+        { region: "New South Wales", flag: "🇦🇺", lat: -34, lon: 146, peak: [4,5,6,7,8,9], shoulder: [3,10], weight: 0.6 },
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [5,6,7,8], shoulder: [4,9], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "São Paulo", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [4,5,6,7,8,9], shoulder: [3,10], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -31.4, lon: -64.2, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 34, lon: 131, peak: [10,11,0,1,2], shoulder: [3,9], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 26, lon: 111, peak: [10,11,0,1,2], shoulder: [3,9], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [4,5,6,7,8,9], shoulder: [3,10], weight: 0.6 },
+        { region: "Egypt", flag: "🇪🇬", lat: 30, lon: 31.2, peak: [10,11,0,1,2], shoulder: [3,9], weight: 0.3 },
       ],
     },
   },
@@ -309,6 +610,30 @@ export const PRODUCE_DB = [
         { region: "Turkey", flag: "🇹🇷", lat: 36.9, lon: 30.7, peak: [10, 11, 0, 1, 2], shoulder: [9, 3], weight: 0.3 },
         { region: "South Africa", flag: "🇿🇦", lat: -32.4, lon: 19.0, peak: [5, 6, 7], shoulder: [4, 8], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 27, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [9,4], weight: 0.6 },
+        { region: "Texas", flag: "🇺🇸", lat: 26.2, lon: -98.2, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "Texas", flag: "🇺🇸", lat: 26.2, lon: -98.2, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.5 },
+        { region: "Florida", flag: "🇺🇸", lat: 27, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [9,4], weight: 0.4 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.6 },
+        { region: "New South Wales", flag: "🇦🇺", lat: -34, lon: 146, peak: [5,6,7,8], shoulder: [4,9], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -31.4, lon: -64.2, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.5 },
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [4,5,6,7], shoulder: [3,8], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 34, lon: 131, peak: [10,11,0,1,2], shoulder: [3,9], weight: 0.4 },
+        { region: "Israel", flag: "🇮🇱", lat: 32.1, lon: 34.8, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.6 },
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [4,5,6,7], shoulder: [3,8], weight: 0.2 },
+      ],
     },
   },
 
@@ -331,6 +656,30 @@ export const PRODUCE_DB = [
         { region: "Turkey", flag: "🇹🇷", lat: 36.8, lon: 30.7, peak: [10, 11, 0, 1, 2], shoulder: [3, 9], weight: 0.3 },
         { region: "South Africa", flag: "🇿🇦", lat: -32.4, lon: 19.0, peak: [4, 5, 6, 7], shoulder: [3, 8], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 34.4, lon: -119.2, peak: [11,0,1,2,3,4], shoulder: [5,10], weight: 0.6 },
+        { region: "Mexico", flag: "🇲🇽", lat: 19.4, lon: -103.5, peak: [6,7,8,9,10], shoulder: [5,11], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 34.4, lon: -119.2, peak: [11,0,1,2,3,4], shoulder: [5,10], weight: 0.6 },
+        { region: "Mexico", flag: "🇲🇽", lat: 19.4, lon: -103.5, peak: [6,7,8,9,10], shoulder: [5,11], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "New South Wales", flag: "🇦🇺", lat: -34, lon: 146, peak: [4,5,6,7,8,9], shoulder: [3,10], weight: 0.6 },
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [5,6,7,8], shoulder: [4,9], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -26.8, lon: -65.2, peak: [4,5,6,7,8,9], shoulder: [3,10], weight: 0.5 },
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [3,4,5,6,7,8], shoulder: [2,9], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 34, lon: 131, peak: [10,11,0,1,2], shoulder: [3,9], weight: 0.5 },
+        { region: "China", flag: "🇨🇳", lat: 26, lon: 111, peak: [10,11,0,1], shoulder: [2,9], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.6 },
+        { region: "Egypt", flag: "🇪🇬", lat: 30, lon: 31.2, peak: [10,11,0,1,2], shoulder: [3,9], weight: 0.3 },
+      ],
     },
   },
 
@@ -351,6 +700,31 @@ export const PRODUCE_DB = [
         { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -46.6, peak: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], shoulder: [], weight: 0.4 },
         { region: "Mexico", flag: "🇲🇽", lat: 18.9, lon: -103.9, peak: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], shoulder: [], weight: 0.4 },
         { region: "Spain", flag: "🇪🇸", lat: 37.4, lon: -1.7, peak: [5, 6, 7, 8, 9], shoulder: [4, 10], weight: 0.2 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Mexico", flag: "🇲🇽", lat: 18.9, lon: -103.9, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.7 },
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -46.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "Mexico", flag: "🇲🇽", lat: 18.9, lon: -103.9, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.8 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.6 },
+        { region: "Thailand", flag: "🇹🇭", lat: 13.8, lon: 100.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -46.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.7 },
+        { region: "Mexico", flag: "🇲🇽", lat: 18.9, lon: -103.9, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Thailand", flag: "🇹🇭", lat: 13.8, lon: 100.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Philippines", flag: "🇵🇭", lat: 14.6, lon: 121, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 18.9, lon: -103.9, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -46.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+        { region: "Egypt", flag: "🇪🇬", lat: 30, lon: 31.2, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.2 },
       ],
     },
   },
@@ -377,6 +751,35 @@ export const PRODUCE_DB = [
         { region: "India", flag: "🇮🇳", lat: 19.1, lon: 73.0, peak: [3, 4, 5, 6], shoulder: [2, 7], weight: 0.3 },
         { region: "Spain", flag: "🇪🇸", lat: 36.7, lon: -4.4, peak: [8, 9, 10], shoulder: [7, 11], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "Mexico", flag: "🇲🇽", lat: 18.5, lon: -96.9, peak: [2,3,4,5,6], shoulder: [1,7], weight: 0.5 },
+        { region: "Peru", flag: "🇵🇪", lat: -5.2, lon: -80.1, peak: [10,11,0,1], shoulder: [9,2], weight: 0.3 },
+        { region: "Brazil", flag: "🇧🇷", lat: -9.5, lon: -40.5, peak: [9,10,11,0,1], shoulder: [8,2], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "Mexico", flag: "🇲🇽", lat: 18.5, lon: -96.9, peak: [2,3,4,5,6,7], shoulder: [1,8], weight: 0.6 },
+        { region: "Peru", flag: "🇵🇪", lat: -5.2, lon: -80.1, peak: [10,11,0,1], shoulder: [9,2], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -20, lon: 148, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.5 },
+        { region: "Northern Territory", flag: "🇦🇺", lat: -12.5, lon: 131, peak: [9,10,11,0], shoulder: [8,1], weight: 0.3 },
+        { region: "Philippines", flag: "🇵🇭", lat: 14.6, lon: 121, peak: [2,3,4,5,6], shoulder: [1,7], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil (northeast)", flag: "🇧🇷", lat: -9.5, lon: -40.5, peak: [9,10,11,0,1,2], shoulder: [8,3], weight: 0.5 },
+        { region: "Peru", flag: "🇵🇪", lat: -5.2, lon: -80.1, peak: [10,11,0,1], shoulder: [9,2], weight: 0.3 },
+        { region: "Ecuador", flag: "🇪🇨", lat: -1.8, lon: -79.5, peak: [9,10,11,0], shoulder: [8,1], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Philippines", flag: "🇵🇭", lat: 14.6, lon: 121, peak: [2,3,4,5,6], shoulder: [1,7], weight: 0.4 },
+        { region: "Thailand", flag: "🇹🇭", lat: 13.8, lon: 100.5, peak: [2,3,4,5], shoulder: [1,6], weight: 0.4 },
+        { region: "India", flag: "🇮🇳", lat: 19.1, lon: 73, peak: [3,4,5,6], shoulder: [2,7], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Limpopo", flag: "🇿🇦", lat: -23.4, lon: 29.4, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.5 },
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [10,11,0,1], shoulder: [9,2], weight: 0.3 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,6,7,8], shoulder: [3,5,9,11], weight: 0.2 },
+      ],
     },
   },
 
@@ -400,6 +803,35 @@ export const PRODUCE_DB = [
         { region: "Costa Rica", flag: "🇨🇷", lat: 10.0, lon: -84.0, peak: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], shoulder: [], weight: 0.5 },
         { region: "Ghana", flag: "🇬🇭", lat: 5.6, lon: -0.2, peak: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], shoulder: [], weight: 0.3 },
         { region: "Ivory Coast", flag: "🇨🇮", lat: 6.8, lon: -5.3, peak: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], shoulder: [], weight: 0.2 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Costa Rica", flag: "🇨🇷", lat: 10, lon: -84, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.6 },
+        { region: "Honduras", flag: "🇭🇳", lat: 15.5, lon: -88, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
+        { region: "Mexico", flag: "🇲🇽", lat: 20, lon: -97, peak: [2,3,4,5,6], shoulder: [1,7], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "Costa Rica", flag: "🇨🇷", lat: 10, lon: -84, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.6 },
+        { region: "Mexico", flag: "🇲🇽", lat: 20, lon: -97, peak: [2,3,4,5,6], shoulder: [1,7], weight: 0.2 },
+        { region: "Honduras", flag: "🇭🇳", lat: 15.5, lon: -88, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -20, lon: 148, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Philippines", flag: "🇵🇭", lat: 7.5, lon: 126, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil", flag: "🇧🇷", lat: -8, lon: -35, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Costa Rica", flag: "🇨🇷", lat: 10, lon: -84, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+        { region: "Paraguay", flag: "🇵🇾", lat: -25.3, lon: -57.6, peak: [9,10,11,0,1,2], shoulder: [3,8], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Philippines", flag: "🇵🇭", lat: 7.5, lon: 126, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Thailand", flag: "🇹🇭", lat: 13.8, lon: 100.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+        { region: "Taiwan", flag: "🇹🇼", lat: 23.5, lon: 120.5, peak: [3,4,5,6,7,8], shoulder: [2,9], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Ghana", flag: "🇬🇭", lat: 5.6, lon: -0.2, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+        { region: "Costa Rica", flag: "🇨🇷", lat: 10, lon: -84, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
       ],
     },
   },
@@ -425,6 +857,35 @@ export const PRODUCE_DB = [
         { region: "Colombia", flag: "🇨🇴", lat: 8.0, lon: -76.5, peak: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], shoulder: [], weight: 0.3 },
         { region: "Canary Islands", flag: "🇪🇸", lat: 28.1, lon: -15.4, peak: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], shoulder: [], weight: 0.3 },
       ],
+      US_SOUTHEAST: [
+        { region: "Ecuador", flag: "🇪🇨", lat: -1.8, lon: -79.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Guatemala", flag: "🇬🇹", lat: 14.6, lon: -90.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+        { region: "Colombia", flag: "🇨🇴", lat: 8, lon: -76.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "Ecuador", flag: "🇪🇨", lat: -1.8, lon: -79.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Guatemala", flag: "🇬🇹", lat: 14.6, lon: -90.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 17, lon: -93.4, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -17, lon: 145.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.6 },
+        { region: "Philippines", flag: "🇵🇭", lat: 7.5, lon: 126, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Ecuador", flag: "🇪🇨", lat: -1.8, lon: -79.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Brazil", flag: "🇧🇷", lat: -12, lon: -38.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Colombia", flag: "🇨🇴", lat: 8, lon: -76.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Philippines", flag: "🇵🇭", lat: 7.5, lon: 126, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Ecuador", flag: "🇪🇨", lat: -1.8, lon: -79.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+        { region: "Taiwan", flag: "🇹🇼", lat: 23.5, lon: 120.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Ecuador", flag: "🇪🇨", lat: -1.8, lon: -79.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+        { region: "South Africa", flag: "🇿🇦", lat: -25.7, lon: 30.4, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
     },
   },
 
@@ -449,6 +910,34 @@ export const PRODUCE_DB = [
         { region: "Chile", flag: "🇨🇱", lat: -33.0, lon: -71.6, peak: [8, 9, 10, 11], shoulder: [7, 0], weight: 0.2 },
         { region: "Israel", flag: "🇮🇱", lat: 32.1, lon: 34.8, peak: [10, 11, 0, 1, 2, 3], shoulder: [4, 9], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "Mexico", flag: "🇲🇽", lat: 19.4, lon: -102, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.7 },
+        { region: "Peru", flag: "🇵🇪", lat: -13.5, lon: -76, peak: [3,4,5,6,7,8], shoulder: [2,9], weight: 0.2 },
+        { region: "Florida", flag: "🇺🇸", lat: 25.7, lon: -80.3, peak: [6,7,8,9,10,11], shoulder: [5,0], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "Mexico", flag: "🇲🇽", lat: 19.4, lon: -102, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.7 },
+        { region: "California", flag: "🇺🇸", lat: 34.4, lon: -119.2, peak: [2,3,4,5,6,7,8], shoulder: [1,9], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [2,3,4,5,6,7,8], shoulder: [1,9], weight: 0.5 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -37.8, lon: 175.3, peak: [8,9,10,11,0], shoulder: [7,1], weight: 0.3 },
+        { region: "Western Australia", flag: "🇦🇺", lat: -31.9, lon: 115.9, peak: [6,7,8,9,10], shoulder: [5,11], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Peru", flag: "🇵🇪", lat: -13.5, lon: -76, peak: [3,4,5,6,7,8], shoulder: [2,9], weight: 0.4 },
+        { region: "Chile", flag: "🇨🇱", lat: -33, lon: -71.6, peak: [8,9,10,11], shoulder: [7,0], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 19.4, lon: -102, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Mexico", flag: "🇲🇽", lat: 19.4, lon: -102, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Peru", flag: "🇵🇪", lat: -13.5, lon: -76, peak: [3,4,5,6,7,8], shoulder: [2,9], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -37.8, lon: 175.3, peak: [8,9,10,11,0], shoulder: [7,1], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "South Africa", flag: "🇿🇦", lat: -23.9, lon: 29.4, peak: [2,3,4,5,6,7,8,9], shoulder: [1,10], weight: 0.6 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
     },
   },
 
@@ -469,6 +958,29 @@ export const PRODUCE_DB = [
         { region: "Spain", flag: "🇪🇸", lat: 38.0, lon: -1.2, peak: [5, 6, 7, 8], shoulder: [4, 9], weight: 0.5 },
         { region: "Italy", flag: "🇮🇹", lat: 41.0, lon: 14.3, peak: [6, 7, 8], shoulder: [5, 9], weight: 0.3 },
         { region: "South Africa", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [11, 0, 1, 2], shoulder: [10, 3], weight: 0.2 },
+      ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.7, lon: -119.8, peak: [5,6,7,8], shoulder: [4,9], weight: 0.6 },
+        { region: "Chile", flag: "🇨🇱", lat: -34, lon: -70.7, peak: [0,1,2], shoulder: [11,3], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.7, lon: -119.8, peak: [5,6,7,8], shoulder: [4,9], weight: 0.6 },
+        { region: "Chile", flag: "🇨🇱", lat: -34, lon: -70.7, peak: [0,1,2], shoulder: [11,3], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [11,0,1,2], shoulder: [10,3], weight: 0.5 },
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [11,0,1], shoulder: [10,2], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Chile", flag: "🇨🇱", lat: -34, lon: -70.7, peak: [11,0,1,2], shoulder: [10,3], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [11,0,1], shoulder: [10,2], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [6,7,8], shoulder: [5,9], weight: 0.5 },
+        { region: "China", flag: "🇨🇳", lat: 34, lon: 108, peak: [6,7,8], shoulder: [5,9], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [11,0,1,2], shoulder: [10,3], weight: 0.6 },
       ],
     },
   },
@@ -492,6 +1004,31 @@ export const PRODUCE_DB = [
         { region: "Spain", flag: "🇪🇸", lat: 38.0, lon: -1.2, peak: [9, 10, 11], shoulder: [8, 0], weight: 0.4 },
         { region: "India", flag: "🇮🇳", lat: 19.1, lon: 73.0, peak: [1, 2, 3], shoulder: [0, 4], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.3, lon: -119.3, peak: [9,10,11], shoulder: [8,0], weight: 0.6 },
+        { region: "Chile", flag: "🇨🇱", lat: -30, lon: -71.2, peak: [3,4,5], shoulder: [2,6], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.3, lon: -119.3, peak: [9,10,11], shoulder: [8,0], weight: 0.6 },
+        { region: "Chile", flag: "🇨🇱", lat: -30, lon: -71.2, peak: [3,4,5], shoulder: [2,6], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [2,3,4,5], shoulder: [1,6], weight: 0.5 },
+        { region: "India", flag: "🇮🇳", lat: 19.1, lon: 73, peak: [1,2,3], shoulder: [0,4], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Chile", flag: "🇨🇱", lat: -30, lon: -71.2, peak: [3,4,5], shoulder: [2,6], weight: 0.5 },
+        { region: "Peru", flag: "🇵🇪", lat: -13.5, lon: -76, peak: [2,3,4], shoulder: [1,5], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "China", flag: "🇨🇳", lat: 34, lon: 108, peak: [8,9,10], shoulder: [7,11], weight: 0.4 },
+        { region: "India", flag: "🇮🇳", lat: 19.1, lon: 73, peak: [1,2,3], shoulder: [0,4], weight: 0.3 },
+        { region: "Turkey", flag: "🇹🇷", lat: 37, lon: 35.3, peak: [9,10,11], shoulder: [8,0], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [2,3,4,5], shoulder: [1,6], weight: 0.5 },
+        { region: "India", flag: "🇮🇳", lat: 19.1, lon: 73, peak: [1,2,3], shoulder: [0,4], weight: 0.3 },
+      ],
     },
   },
 
@@ -514,6 +1051,29 @@ export const PRODUCE_DB = [
         { region: "Northeast US", flag: "🇺🇸", lat: 41.8, lon: -70.7, peak: [9, 10, 11], shoulder: [8], weight: 0.5 },
         { region: "Canada", flag: "🇨🇦", lat: 49.1, lon: -122.8, peak: [9, 10], shoulder: [8, 11], weight: 0.4 },
       ],
+      US_SOUTHEAST: [
+        { region: "Massachusetts", flag: "🇺🇸", lat: 41.8, lon: -70.7, peak: [9,10,11], shoulder: [8], weight: 0.5 },
+        { region: "Wisconsin", flag: "🇺🇸", lat: 44.3, lon: -89.8, peak: [9,10], shoulder: [8,11], weight: 0.4 },
+      ],
+      US_CENTRAL: [
+        { region: "Wisconsin", flag: "🇺🇸", lat: 44.3, lon: -89.8, peak: [9,10], shoulder: [8,11], weight: 0.6 },
+        { region: "Massachusetts", flag: "🇺🇸", lat: 41.8, lon: -70.7, peak: [9,10,11], shoulder: [8], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "USA (imported)", flag: "🇺🇸", lat: 41.8, lon: -70.7, peak: [9,10,11], shoulder: [8], weight: 0.6 },
+        { region: "Canada", flag: "🇨🇦", lat: 49.1, lon: -122.8, peak: [9,10], shoulder: [8,11], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "USA (imported)", flag: "🇺🇸", lat: 41.8, lon: -70.7, peak: [9,10,11], shoulder: [8], weight: 0.5 },
+        { region: "Chile", flag: "🇨🇱", lat: -35, lon: -71.2, peak: [3,4], shoulder: [2,5], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "USA (imported)", flag: "🇺🇸", lat: 41.8, lon: -70.7, peak: [9,10,11], shoulder: [8], weight: 0.5 },
+        { region: "Canada", flag: "🇨🇦", lat: 49.1, lon: -122.8, peak: [9,10], shoulder: [8,11], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "USA (imported)", flag: "🇺🇸", lat: 41.8, lon: -70.7, peak: [9,10,11], shoulder: [8], weight: 0.6 },
+      ],
     },
   },
 
@@ -535,6 +1095,30 @@ export const PRODUCE_DB = [
         { region: "Spain", flag: "🇪🇸", lat: 38.0, lon: -1.2, peak: [7, 8, 9], shoulder: [6, 10], weight: 0.3 },
         { region: "Italy", flag: "🇮🇹", lat: 38.1, lon: 13.4, peak: [7, 8, 9], shoulder: [6, 10], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.7, lon: -119.8, peak: [7,8,9], shoulder: [6,10], weight: 0.6 },
+        { region: "Turkey", flag: "🇹🇷", lat: 37.8, lon: 27.8, peak: [7,8,9], shoulder: [6,10], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.7, lon: -119.8, peak: [7,8,9], shoulder: [6,10], weight: 0.7 },
+        { region: "Turkey", flag: "🇹🇷", lat: 37.8, lon: 27.8, peak: [7,8,9], shoulder: [6,10], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [0,1,2,3], shoulder: [11,4], weight: 0.5 },
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [1,2,3], shoulder: [0,4], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Chile", flag: "🇨🇱", lat: -33, lon: -71.6, peak: [0,1,2,3], shoulder: [11,4], weight: 0.4 },
+        { region: "Brazil (south)", flag: "🇧🇷", lat: -29, lon: -51, peak: [0,1,2], shoulder: [11,3], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [8,9,10], shoulder: [7,11], weight: 0.4 },
+        { region: "Turkey", flag: "🇹🇷", lat: 37.8, lon: 27.8, peak: [7,8,9], shoulder: [6,10], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [0,1,2,3], shoulder: [11,4], weight: 0.5 },
+        { region: "Turkey", flag: "🇹🇷", lat: 37.8, lon: 27.8, peak: [7,8,9], shoulder: [6,10], weight: 0.3 },
+      ],
     },
   },
 
@@ -554,6 +1138,29 @@ export const PRODUCE_DB = [
         { region: "Spain", flag: "🇪🇸", lat: 39.0, lon: -0.3, peak: [9, 10, 11], shoulder: [8, 0], weight: 0.5 },
         { region: "Italy", flag: "🇮🇹", lat: 41.0, lon: 14.3, peak: [9, 10, 11], shoulder: [8], weight: 0.3 },
         { region: "Israel", flag: "🇮🇱", lat: 32.1, lon: 34.8, peak: [10, 11, 0], shoulder: [9, 1], weight: 0.2 },
+      ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.7, lon: -119.8, peak: [9,10,11], shoulder: [8,0], weight: 0.7 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.7, lon: -119.8, peak: [9,10,11], shoulder: [8,0], weight: 0.7 },
+      ],
+      OCEANIA: [
+        { region: "New South Wales", flag: "🇦🇺", lat: -34, lon: 150, peak: [3,4,5], shoulder: [2,6], weight: 0.5 },
+        { region: "Japan (imported)", flag: "🇯🇵", lat: 35, lon: 136, peak: [9,10,11], shoulder: [8,0], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [2,3,4,5], shoulder: [1,6], weight: 0.4 },
+        { region: "Chile", flag: "🇨🇱", lat: -33, lon: -71.6, peak: [3,4,5], shoulder: [2,6], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [9,10,11], shoulder: [8,0], weight: 0.5 },
+        { region: "South Korea", flag: "🇰🇷", lat: 35.2, lon: 128.7, peak: [9,10,11], shoulder: [8], weight: 0.3 },
+        { region: "China", flag: "🇨🇳", lat: 34, lon: 108, peak: [9,10,11], shoulder: [8], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [3,4,5], shoulder: [2,6], weight: 0.5 },
+        { region: "Israel", flag: "🇮🇱", lat: 32.1, lon: 34.8, peak: [10,11,0], shoulder: [9,1], weight: 0.3 },
       ],
     },
   },
@@ -582,6 +1189,31 @@ export const PRODUCE_DB = [
         { region: "Spain", flag: "🇪🇸", lat: 38.0, lon: -1.2, peak: [1, 2, 3, 4], shoulder: [0, 5], weight: 0.3 },
         { region: "Peru", flag: "🇵🇪", lat: -13.6, lon: -76.1, peak: [8, 9, 10, 11], shoulder: [7, 0], weight: 0.3 },
       ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [1,2,3,4], shoulder: [0,5], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [1,2,3,4,5], shoulder: [0,6], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [0,1,2,3], shoulder: [11,4], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [1,2,3,4,5], shoulder: [0,6], weight: 0.5 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [0,1,2,3], shoulder: [11,4], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [8,9,10,11], shoulder: [7,0], weight: 0.5 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [8,9,10], shoulder: [7,11], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Peru", flag: "🇵🇪", lat: -13.6, lon: -76.1, peak: [8,9,10,11], shoulder: [7,0], weight: 0.4 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [8,9,10], shoulder: [7,11], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [3,4,5], shoulder: [2,6], weight: 0.5 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [2,3,4,5], shoulder: [1,6], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [8,9,10,11], shoulder: [7,0], weight: 0.5 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
     },
   },
 
@@ -601,6 +1233,31 @@ export const PRODUCE_DB = [
         { region: "Italy", flag: "🇮🇹", lat: 41.0, lon: 14.3, peak: [2, 3, 4, 5], shoulder: [1, 6], weight: 0.4 },
         { region: "Spain", flag: "🇪🇸", lat: 38.0, lon: -1.2, peak: [10, 11, 0, 1, 2, 3], shoulder: [4, 9], weight: 0.4 },
         { region: "France", flag: "🇫🇷", lat: 48.6, lon: -3.8, peak: [4, 5, 6], shoulder: [3, 7], weight: 0.2 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [1,2,3,4], shoulder: [0,5], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [1,2,3,4,5], shoulder: [0,6], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [0,1,2,3], shoulder: [11,4], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [1,2,3,4,5], shoulder: [0,6], weight: 0.5 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [0,1,2,3], shoulder: [11,4], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [8,9,10,11], shoulder: [7,0], weight: 0.5 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [8,9,10], shoulder: [7,11], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Peru", flag: "🇵🇪", lat: -13.6, lon: -76.1, peak: [8,9,10,11], shoulder: [7,0], weight: 0.4 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [8,9,10], shoulder: [7,11], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [3,4,5], shoulder: [2,6], weight: 0.5 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [2,3,4,5], shoulder: [1,6], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [8,9,10,11], shoulder: [7,0], weight: 0.5 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
       ],
     },
   },
@@ -625,6 +1282,31 @@ export const PRODUCE_DB = [
         { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], shoulder: [], weight: 0.3 },
         { region: "Guatemala", flag: "🇬🇹", lat: 14.6, lon: -90.5, peak: [10, 11, 0, 1], shoulder: [9, 2], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [1,2,3,4], shoulder: [0,5], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [1,2,3,4,5], shoulder: [0,6], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [0,1,2,3], shoulder: [11,4], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [1,2,3,4,5], shoulder: [0,6], weight: 0.5 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [0,1,2,3], shoulder: [11,4], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [8,9,10,11], shoulder: [7,0], weight: 0.5 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [8,9,10], shoulder: [7,11], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Peru", flag: "🇵🇪", lat: -13.6, lon: -76.1, peak: [8,9,10,11], shoulder: [7,0], weight: 0.4 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [8,9,10], shoulder: [7,11], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [3,4,5], shoulder: [2,6], weight: 0.5 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [2,3,4,5], shoulder: [1,6], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [8,9,10,11], shoulder: [7,0], weight: 0.5 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
     },
   },
 
@@ -646,6 +1328,33 @@ export const PRODUCE_DB = [
       NORTHERN_EUROPE: [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 5.0, peak: [3, 4, 5, 9, 10], shoulder: [2, 6, 8, 11], weight: 0.5 },
         { region: "Spain", flag: "🇪🇸", lat: 37.4, lon: -3.7, peak: [10, 11, 0, 1, 2, 3], shoulder: [4, 9], weight: 0.4 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [3,4,5,9,10,11], shoulder: [2,6], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.5 },
+        { region: "Arizona", flag: "🇺🇸", lat: 32.7, lon: -114.6, peak: [11,0,1,2,3], shoulder: [10,4], weight: 0.3 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [4,5,9,10], shoulder: [3,6,8,11], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [3,4,5,8,9,10], shoulder: [2,6,7,11], weight: 0.5 },
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [3,4,5,9,10], shoulder: [2,6,8,11], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "São Paulo", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [3,4,5,6,7,8,9], shoulder: [2,10], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [3,4,5,8,9,10], shoulder: [2,6,7,11], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.5 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [3,4,5,8,9,10], shoulder: [2,6,7,11], weight: 0.5 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
       ],
     },
   },
@@ -669,6 +1378,33 @@ export const PRODUCE_DB = [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 5.0, peak: [4, 5, 6, 7, 8, 9, 10], shoulder: [3, 11], weight: 0.5 },
         { region: "Spain", flag: "🇪🇸", lat: 37.4, lon: -3.7, peak: [10, 11, 0, 1, 2, 3], shoulder: [4, 9], weight: 0.4 },
       ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [3,4,5,9,10,11], shoulder: [2,6], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.5 },
+        { region: "Arizona", flag: "🇺🇸", lat: 32.7, lon: -114.6, peak: [11,0,1,2,3], shoulder: [10,4], weight: 0.3 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [4,5,9,10], shoulder: [3,6,8,11], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [3,4,5,8,9,10], shoulder: [2,6,7,11], weight: 0.5 },
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [3,4,5,9,10], shoulder: [2,6,8,11], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "São Paulo", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [3,4,5,6,7,8,9], shoulder: [2,10], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [3,4,5,8,9,10], shoulder: [2,6,7,11], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.5 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [3,4,5,8,9,10], shoulder: [2,6,7,11], weight: 0.5 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
     },
   },
 
@@ -689,6 +1425,33 @@ export const PRODUCE_DB = [
       NORTHERN_EUROPE: [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 5.0, peak: [3, 4, 5, 6], shoulder: [2, 7, 9, 10], weight: 0.6 },
         { region: "Spain", flag: "🇪🇸", lat: 37.4, lon: -3.7, peak: [10, 11, 0, 1, 2], shoulder: [3, 9], weight: 0.3 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [3,4,5,9,10,11], shoulder: [2,6], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.5 },
+        { region: "Arizona", flag: "🇺🇸", lat: 32.7, lon: -114.6, peak: [11,0,1,2,3], shoulder: [10,4], weight: 0.3 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [4,5,9,10], shoulder: [3,6,8,11], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [3,4,5,8,9,10], shoulder: [2,6,7,11], weight: 0.5 },
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [3,4,5,9,10], shoulder: [2,6,8,11], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "São Paulo", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [3,4,5,6,7,8,9], shoulder: [2,10], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [3,4,5,8,9,10], shoulder: [2,6,7,11], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.5 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [3,4,5,8,9,10], shoulder: [2,6,7,11], weight: 0.5 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
       ],
     },
   },
@@ -713,6 +1476,35 @@ export const PRODUCE_DB = [
         { region: "Spain", flag: "🇪🇸", lat: 36.7, lon: -2.5, peak: [10, 11, 0, 1, 2, 3], shoulder: [4, 9], weight: 0.4 },
         { region: "Morocco", flag: "🇲🇦", lat: 33.6, lon: -7.6, peak: [10, 11, 0, 1, 2], shoulder: [3, 9], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [5,6,7,8], shoulder: [4,9], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.3 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [6,7,8], shoulder: [5,9], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.4 },
+        { region: "New South Wales", flag: "🇦🇺", lat: -33.5, lon: 150, peak: [10,11,0,1,2], shoulder: [3,9], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [8,9,10,11,0,1,2,3], shoulder: [4,7], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.3 },
+        { region: "Philippines", flag: "🇵🇭", lat: 14.6, lon: 121, peak: [0,1,2,3,10,11], shoulder: [4,9], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Limpopo", flag: "🇿🇦", lat: -23.4, lon: 29.4, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.4 },
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [9,10,11,0,1,2], shoulder: [3,8], weight: 0.3 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
+      ],
     },
   },
 
@@ -734,6 +1526,35 @@ export const PRODUCE_DB = [
       NORTHERN_EUROPE: [
         { region: "Western Europe", flag: "🇪🇺", lat: 48.0, lon: 2.3, peak: [7, 8, 9], shoulder: [6, 10], weight: 0.5 },
         { region: "Spain", flag: "🇪🇸", lat: 42.0, lon: -4.5, peak: [6, 7, 8], shoulder: [5, 9], weight: 0.3 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [5,6,7,8], shoulder: [4,9], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.3 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [6,7,8], shoulder: [5,9], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.4 },
+        { region: "New South Wales", flag: "🇦🇺", lat: -33.5, lon: 150, peak: [10,11,0,1,2], shoulder: [3,9], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [8,9,10,11,0,1,2,3], shoulder: [4,7], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.3 },
+        { region: "Philippines", flag: "🇵🇭", lat: 14.6, lon: 121, peak: [0,1,2,3,10,11], shoulder: [4,9], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Limpopo", flag: "🇿🇦", lat: -23.4, lon: 29.4, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.4 },
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [9,10,11,0,1,2], shoulder: [3,8], weight: 0.3 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
       ],
     },
   },
@@ -758,6 +1579,35 @@ export const PRODUCE_DB = [
         { region: "Netherlands", flag: "🇳🇱", lat: 52.0, lon: 4.3, peak: [5, 6, 7, 8], shoulder: [4, 9], weight: 0.3 },
         { region: "Morocco", flag: "🇲🇦", lat: 33.6, lon: -7.6, peak: [10, 11, 0, 1, 2], shoulder: [3, 9], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [5,6,7,8], shoulder: [4,9], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.3 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [6,7,8], shoulder: [5,9], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.4 },
+        { region: "New South Wales", flag: "🇦🇺", lat: -33.5, lon: 150, peak: [10,11,0,1,2], shoulder: [3,9], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [8,9,10,11,0,1,2,3], shoulder: [4,7], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.3 },
+        { region: "Philippines", flag: "🇵🇭", lat: 14.6, lon: 121, peak: [0,1,2,3,10,11], shoulder: [4,9], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Limpopo", flag: "🇿🇦", lat: -23.4, lon: 29.4, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.4 },
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [9,10,11,0,1,2], shoulder: [3,8], weight: 0.3 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
+      ],
     },
   },
 
@@ -780,6 +1630,35 @@ export const PRODUCE_DB = [
         { region: "Netherlands", flag: "🇳🇱", lat: 52.0, lon: 4.3, peak: [3, 4, 5, 6, 7, 8, 9], shoulder: [2, 10], weight: 0.5 },
         { region: "Spain", flag: "🇪🇸", lat: 36.7, lon: -2.5, peak: [10, 11, 0, 1, 2, 3], shoulder: [4, 9], weight: 0.4 },
       ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [5,6,7,8], shoulder: [4,9], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.3 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [6,7,8], shoulder: [5,9], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.4 },
+        { region: "New South Wales", flag: "🇦🇺", lat: -33.5, lon: 150, peak: [10,11,0,1,2], shoulder: [3,9], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [8,9,10,11,0,1,2,3], shoulder: [4,7], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.3 },
+        { region: "Philippines", flag: "🇵🇭", lat: 14.6, lon: 121, peak: [0,1,2,3,10,11], shoulder: [4,9], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Limpopo", flag: "🇿🇦", lat: -23.4, lon: 29.4, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.4 },
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [9,10,11,0,1,2], shoulder: [3,8], weight: 0.3 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
+      ],
     },
   },
 
@@ -801,6 +1680,35 @@ export const PRODUCE_DB = [
       NORTHERN_EUROPE: [
         { region: "Netherlands", flag: "🇳🇱", lat: 52.0, lon: 4.3, peak: [5, 6, 7, 8, 9], shoulder: [4, 10], weight: 0.4 },
         { region: "Spain", flag: "🇪🇸", lat: 36.7, lon: -2.5, peak: [9, 10, 11, 0, 1, 2, 3, 4], shoulder: [5, 8], weight: 0.5 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [5,6,7,8], shoulder: [4,9], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.3 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [6,7,8], shoulder: [5,9], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.4 },
+        { region: "New South Wales", flag: "🇦🇺", lat: -33.5, lon: 150, peak: [10,11,0,1,2], shoulder: [3,9], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [8,9,10,11,0,1,2,3], shoulder: [4,7], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.3 },
+        { region: "Philippines", flag: "🇵🇭", lat: 14.6, lon: 121, peak: [0,1,2,3,10,11], shoulder: [4,9], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Limpopo", flag: "🇿🇦", lat: -23.4, lon: 29.4, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.4 },
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [9,10,11,0,1,2], shoulder: [3,8], weight: 0.3 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
       ],
     },
   },
@@ -825,6 +1733,35 @@ export const PRODUCE_DB = [
         { region: "Netherlands", flag: "🇳🇱", lat: 52.0, lon: 4.3, peak: [5, 6, 7, 8, 9], shoulder: [4, 10], weight: 0.3 },
         { region: "Turkey", flag: "🇹🇷", lat: 37.0, lon: 35.3, peak: [6, 7, 8, 9], shoulder: [5, 10], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [5,6,7,8], shoulder: [4,9], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.3 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [6,7,8], shoulder: [5,9], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.4 },
+        { region: "New South Wales", flag: "🇦🇺", lat: -33.5, lon: 150, peak: [10,11,0,1,2], shoulder: [3,9], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [8,9,10,11,0,1,2,3], shoulder: [4,7], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.3 },
+        { region: "Philippines", flag: "🇵🇭", lat: 14.6, lon: 121, peak: [0,1,2,3,10,11], shoulder: [4,9], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Limpopo", flag: "🇿🇦", lat: -23.4, lon: 29.4, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.4 },
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [9,10,11,0,1,2], shoulder: [3,8], weight: 0.3 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
+      ],
     },
   },
 
@@ -848,6 +1785,35 @@ export const PRODUCE_DB = [
         { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], shoulder: [], weight: 0.4 },
         { region: "Morocco", flag: "🇲🇦", lat: 33.6, lon: -7.6, peak: [10, 11, 0, 1, 2, 3], shoulder: [4, 9], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [5,6,7,8], shoulder: [4,9], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.3 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.3 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [6,7,8], shoulder: [5,9], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.4 },
+        { region: "New South Wales", flag: "🇦🇺", lat: -33.5, lon: 150, peak: [10,11,0,1,2], shoulder: [3,9], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [8,9,10,11,0,1,2,3], shoulder: [4,7], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [10,11,0,1,2], shoulder: [9,3], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [5,6,7,8,9], shoulder: [4,10], weight: 0.3 },
+        { region: "Philippines", flag: "🇵🇭", lat: 14.6, lon: 121, peak: [0,1,2,3,10,11], shoulder: [4,9], weight: 0.2 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Limpopo", flag: "🇿🇦", lat: -23.4, lon: 29.4, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.4 },
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [9,10,11,0,1,2], shoulder: [3,8], weight: 0.3 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.2 },
+      ],
     },
   },
 
@@ -870,6 +1836,34 @@ export const PRODUCE_DB = [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 1.0, peak: [6, 7, 8, 9, 10], shoulder: [5, 11], weight: 0.5 },
         { region: "Spain", flag: "🇪🇸", lat: 37.4, lon: -3.7, peak: [10, 11, 0, 1, 2, 3], shoulder: [4, 9], weight: 0.4 },
       ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.5 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [9,10,11], shoulder: [4,5,8], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [3,4,5,6,7,8], shoulder: [2,9], weight: 0.5 },
+        { region: "Tasmania", flag: "🇦🇺", lat: -42, lon: 147, peak: [3,4,5,6,7,8,9], shoulder: [2,10], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil (south)", flag: "🇧🇷", lat: -29, lon: -51, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.4 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -33, lon: -71.6, peak: [4,5,6,7], shoulder: [3,8], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.5 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
     },
   },
 
@@ -890,6 +1884,34 @@ export const PRODUCE_DB = [
       NORTHERN_EUROPE: [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 1.0, peak: [6, 7, 8, 9, 10], shoulder: [5, 11], weight: 0.5 },
         { region: "Spain", flag: "🇪🇸", lat: 37.4, lon: -3.7, peak: [10, 11, 0, 1, 2, 3], shoulder: [4, 9], weight: 0.4 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.5 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [9,10,11], shoulder: [4,5,8], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [3,4,5,6,7,8], shoulder: [2,9], weight: 0.5 },
+        { region: "Tasmania", flag: "🇦🇺", lat: -42, lon: 147, peak: [3,4,5,6,7,8,9], shoulder: [2,10], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil (south)", flag: "🇧🇷", lat: -29, lon: -51, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.4 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -33, lon: -71.6, peak: [4,5,6,7], shoulder: [3,8], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.5 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
       ],
     },
   },
@@ -912,6 +1934,34 @@ export const PRODUCE_DB = [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 3.0, peak: [8, 9, 10, 11, 0], shoulder: [1, 7], weight: 0.6 },
         { region: "Netherlands", flag: "🇳🇱", lat: 52.0, lon: 4.3, peak: [9, 10, 11], shoulder: [8, 0], weight: 0.3 },
       ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.5 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [9,10,11], shoulder: [4,5,8], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [3,4,5,6,7,8], shoulder: [2,9], weight: 0.5 },
+        { region: "Tasmania", flag: "🇦🇺", lat: -42, lon: 147, peak: [3,4,5,6,7,8,9], shoulder: [2,10], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil (south)", flag: "🇧🇷", lat: -29, lon: -51, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.4 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -33, lon: -71.6, peak: [4,5,6,7], shoulder: [3,8], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.5 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
     },
   },
 
@@ -931,6 +1981,33 @@ export const PRODUCE_DB = [
       NORTHERN_EUROPE: [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 5.0, peak: [9, 10, 11, 0, 1], shoulder: [2, 8], weight: 0.6 },
         { region: "Italy", flag: "🇮🇹", lat: 41.0, lon: 14.3, peak: [10, 11, 0, 1, 2], shoulder: [3, 9], weight: 0.3 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [3,4,5,9,10,11], shoulder: [2,6], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.5 },
+        { region: "Arizona", flag: "🇺🇸", lat: 32.7, lon: -114.6, peak: [11,0,1,2,3], shoulder: [10,4], weight: 0.3 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [4,5,9,10], shoulder: [3,6,8,11], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [3,4,5,8,9,10], shoulder: [2,6,7,11], weight: 0.5 },
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [3,4,5,9,10], shoulder: [2,6,8,11], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "São Paulo", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [3,4,5,6,7,8,9], shoulder: [2,10], weight: 0.5 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [3,4,5,8,9,10], shoulder: [2,6,7,11], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.5 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [10,11,0,1,2,3,4], shoulder: [5,9], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [3,4,5,8,9,10], shoulder: [2,6,7,11], weight: 0.5 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
       ],
     },
   },
@@ -955,6 +2032,34 @@ export const PRODUCE_DB = [
         { region: "Spain", flag: "🇪🇸", lat: 37.4, lon: -3.7, peak: [9, 10, 11], shoulder: [8, 0], weight: 0.3 },
         { region: "Egypt", flag: "🇪🇬", lat: 30.0, lon: 31.2, peak: [9, 10, 11, 0], shoulder: [8, 1], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [8,9,10,11,0,1], shoulder: [2,7], weight: 0.3 },
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [7,8,9,10,11], shoulder: [0,6], weight: 0.3 },
+        { region: "Idaho", flag: "🇺🇸", lat: 43.6, lon: -114.7, peak: [8,9,10], shoulder: [7,11,0,1,2], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [1,2,3,4,5,6,7], shoulder: [0,8], weight: 0.5 },
+        { region: "Tasmania", flag: "🇦🇺", lat: -42, lon: 147, peak: [2,3,4,5,6,7], shoulder: [1,8], weight: 0.3 },
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [3,4,5,6], shoulder: [2,7], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [2,3,4,5,6,7], shoulder: [1,8], weight: 0.4 },
+        { region: "Brazil (south)", flag: "🇧🇷", lat: -29, lon: -51, peak: [3,4,5,6,7], shoulder: [2,8], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -33, lon: -71.6, peak: [3,4,5,6], shoulder: [2,7], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [9,10,11,0,1,2], shoulder: [3,8], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 36, lon: 117, peak: [8,9,10,11,0,1,2], shoulder: [3,7], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [3,4,5,6,7], shoulder: [2,8], weight: 0.5 },
+        { region: "Egypt", flag: "🇪🇬", lat: 30, lon: 31.2, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.3 },
+      ],
     },
   },
 
@@ -977,6 +2082,32 @@ export const PRODUCE_DB = [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 5.0, peak: [9, 10, 11], shoulder: [8, 0, 1], weight: 0.5 },
         { region: "Spain", flag: "🇪🇸", lat: 37.4, lon: -3.7, peak: [8, 9, 10, 11], shoulder: [7, 0], weight: 0.3 },
       ],
+      US_SOUTHEAST: [
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [9,10,11], shoulder: [8,0,1], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.7, lon: -119.8, peak: [8,9,10,11], shoulder: [7,0], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 20, lon: -103, peak: [0,1,2,3], shoulder: [11,4], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [9,10], shoulder: [8,11], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.7, lon: -119.8, peak: [8,9,10,11,0], shoulder: [7,1], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 20, lon: -103, peak: [0,1,2,3], shoulder: [11,4], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [2,3,4,5,6], shoulder: [1,7], weight: 0.5 },
+        { region: "New South Wales", flag: "🇦🇺", lat: -33.5, lon: 150, peak: [3,4,5,6], shoulder: [2,7], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [2,3,4,5], shoulder: [1,6], weight: 0.4 },
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [3,4,5,6], shoulder: [2,7], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [9,10,11], shoulder: [8,0], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [8,9,10,11], shoulder: [7,0], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Limpopo", flag: "🇿🇦", lat: -23.4, lon: 29.4, peak: [2,3,4,5,6], shoulder: [1,7], weight: 0.5 },
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [3,4,5], shoulder: [2,6], weight: 0.3 },
+      ],
     },
   },
 
@@ -997,6 +2128,32 @@ export const PRODUCE_DB = [
       NORTHERN_EUROPE: [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 5.0, peak: [9, 10], shoulder: [8, 11], weight: 0.5 },
         { region: "Spain", flag: "🇪🇸", lat: 37.4, lon: -3.7, peak: [9, 10, 11], shoulder: [8, 0], weight: 0.3 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [9,10,11], shoulder: [8,0,1], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.7, lon: -119.8, peak: [8,9,10,11], shoulder: [7,0], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 20, lon: -103, peak: [0,1,2,3], shoulder: [11,4], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [9,10], shoulder: [8,11], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.7, lon: -119.8, peak: [8,9,10,11,0], shoulder: [7,1], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 20, lon: -103, peak: [0,1,2,3], shoulder: [11,4], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Queensland", flag: "🇦🇺", lat: -27.5, lon: 153, peak: [2,3,4,5,6], shoulder: [1,7], weight: 0.5 },
+        { region: "New South Wales", flag: "🇦🇺", lat: -33.5, lon: 150, peak: [3,4,5,6], shoulder: [2,7], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [2,3,4,5], shoulder: [1,6], weight: 0.4 },
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [3,4,5,6], shoulder: [2,7], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [9,10,11], shoulder: [8,0], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [8,9,10,11], shoulder: [7,0], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Limpopo", flag: "🇿🇦", lat: -23.4, lon: 29.4, peak: [2,3,4,5,6], shoulder: [1,7], weight: 0.5 },
+        { region: "Mozambique", flag: "🇲🇿", lat: -25, lon: 32.6, peak: [3,4,5], shoulder: [2,6], weight: 0.3 },
       ],
     },
   },
@@ -1020,6 +2177,34 @@ export const PRODUCE_DB = [
         { region: "Spain", flag: "🇪🇸", lat: 37.4, lon: -3.7, peak: [0, 1, 2, 3, 4], shoulder: [5, 11], weight: 0.3 },
         { region: "Israel", flag: "🇮🇱", lat: 32.1, lon: 34.8, peak: [10, 11, 0, 1, 2, 3], shoulder: [4, 9], weight: 0.2 },
       ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [8,9,10,11,0,1], shoulder: [2,7], weight: 0.3 },
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [7,8,9,10,11], shoulder: [0,6], weight: 0.3 },
+        { region: "Idaho", flag: "🇺🇸", lat: 43.6, lon: -114.7, peak: [8,9,10], shoulder: [7,11,0,1,2], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [1,2,3,4,5,6,7], shoulder: [0,8], weight: 0.5 },
+        { region: "Tasmania", flag: "🇦🇺", lat: -42, lon: 147, peak: [2,3,4,5,6,7], shoulder: [1,8], weight: 0.3 },
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [3,4,5,6], shoulder: [2,7], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [2,3,4,5,6,7], shoulder: [1,8], weight: 0.4 },
+        { region: "Brazil (south)", flag: "🇧🇷", lat: -29, lon: -51, peak: [3,4,5,6,7], shoulder: [2,8], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -33, lon: -71.6, peak: [3,4,5,6], shoulder: [2,7], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [9,10,11,0,1,2], shoulder: [3,8], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 36, lon: 117, peak: [8,9,10,11,0,1,2], shoulder: [3,7], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [3,4,5,6,7], shoulder: [2,8], weight: 0.5 },
+        { region: "Egypt", flag: "🇪🇬", lat: 30, lon: 31.2, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.3 },
+      ],
     },
   },
 
@@ -1041,6 +2226,34 @@ export const PRODUCE_DB = [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 5.0, peak: [6, 7, 8, 9, 10], shoulder: [5, 11], weight: 0.5 },
         { region: "Netherlands", flag: "🇳🇱", lat: 52.0, lon: 4.3, peak: [6, 7, 8, 9, 10, 11], shoulder: [5, 0], weight: 0.4 },
       ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [8,9,10,11,0,1], shoulder: [2,7], weight: 0.3 },
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [7,8,9,10,11], shoulder: [0,6], weight: 0.3 },
+        { region: "Idaho", flag: "🇺🇸", lat: 43.6, lon: -114.7, peak: [8,9,10], shoulder: [7,11,0,1,2], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [1,2,3,4,5,6,7], shoulder: [0,8], weight: 0.5 },
+        { region: "Tasmania", flag: "🇦🇺", lat: -42, lon: 147, peak: [2,3,4,5,6,7], shoulder: [1,8], weight: 0.3 },
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [3,4,5,6], shoulder: [2,7], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [2,3,4,5,6,7], shoulder: [1,8], weight: 0.4 },
+        { region: "Brazil (south)", flag: "🇧🇷", lat: -29, lon: -51, peak: [3,4,5,6,7], shoulder: [2,8], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -33, lon: -71.6, peak: [3,4,5,6], shoulder: [2,7], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [9,10,11,0,1,2], shoulder: [3,8], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 36, lon: 117, peak: [8,9,10,11,0,1,2], shoulder: [3,7], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [3,4,5,6,7], shoulder: [2,8], weight: 0.5 },
+        { region: "Egypt", flag: "🇪🇬", lat: 30, lon: 31.2, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.3 },
+      ],
     },
   },
 
@@ -1060,6 +2273,34 @@ export const PRODUCE_DB = [
       NORTHERN_EUROPE: [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 5.0, peak: [9, 10, 11, 0], shoulder: [1, 2, 8], weight: 0.6 },
         { region: "France", flag: "🇫🇷", lat: 48.9, lon: 2.3, peak: [9, 10, 11], shoulder: [0, 1, 8], weight: 0.3 },
+      ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [8,9,10,11,0,1], shoulder: [2,7], weight: 0.3 },
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [7,8,9,10,11], shoulder: [0,6], weight: 0.3 },
+        { region: "Idaho", flag: "🇺🇸", lat: 43.6, lon: -114.7, peak: [8,9,10], shoulder: [7,11,0,1,2], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [1,2,3,4,5,6,7], shoulder: [0,8], weight: 0.5 },
+        { region: "Tasmania", flag: "🇦🇺", lat: -42, lon: 147, peak: [2,3,4,5,6,7], shoulder: [1,8], weight: 0.3 },
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [3,4,5,6], shoulder: [2,7], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [2,3,4,5,6,7], shoulder: [1,8], weight: 0.4 },
+        { region: "Brazil (south)", flag: "🇧🇷", lat: -29, lon: -51, peak: [3,4,5,6,7], shoulder: [2,8], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -33, lon: -71.6, peak: [3,4,5,6], shoulder: [2,7], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [9,10,11,0,1,2], shoulder: [3,8], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 36, lon: 117, peak: [8,9,10,11,0,1,2], shoulder: [3,7], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [3,4,5,6,7], shoulder: [2,8], weight: 0.5 },
+        { region: "Egypt", flag: "🇪🇬", lat: 30, lon: 31.2, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.3 },
       ],
     },
   },
@@ -1081,6 +2322,34 @@ export const PRODUCE_DB = [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 1.0, peak: [9, 10, 11, 0, 1, 2], shoulder: [3, 8], weight: 0.6 },
         { region: "Netherlands", flag: "🇳🇱", lat: 52.0, lon: 4.3, peak: [10, 11, 0, 1, 2], shoulder: [3, 9], weight: 0.3 },
       ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [8,9,10,11,0,1], shoulder: [2,7], weight: 0.3 },
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [7,8,9,10,11], shoulder: [0,6], weight: 0.3 },
+        { region: "Idaho", flag: "🇺🇸", lat: 43.6, lon: -114.7, peak: [8,9,10], shoulder: [7,11,0,1,2], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [1,2,3,4,5,6,7], shoulder: [0,8], weight: 0.5 },
+        { region: "Tasmania", flag: "🇦🇺", lat: -42, lon: 147, peak: [2,3,4,5,6,7], shoulder: [1,8], weight: 0.3 },
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [3,4,5,6], shoulder: [2,7], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [2,3,4,5,6,7], shoulder: [1,8], weight: 0.4 },
+        { region: "Brazil (south)", flag: "🇧🇷", lat: -29, lon: -51, peak: [3,4,5,6,7], shoulder: [2,8], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -33, lon: -71.6, peak: [3,4,5,6], shoulder: [2,7], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [9,10,11,0,1,2], shoulder: [3,8], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 36, lon: 117, peak: [8,9,10,11,0,1,2], shoulder: [3,7], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [3,4,5,6,7], shoulder: [2,8], weight: 0.5 },
+        { region: "Egypt", flag: "🇪🇬", lat: 30, lon: 31.2, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.3 },
+      ],
     },
   },
 
@@ -1100,6 +2369,32 @@ export const PRODUCE_DB = [
       NORTHERN_EUROPE: [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 1.0, peak: [7, 8, 9, 10, 11], shoulder: [0, 6], weight: 0.5 },
         { region: "Spain", flag: "🇪🇸", lat: 37.4, lon: -3.7, peak: [0, 1, 2, 3, 4], shoulder: [5, 11], weight: 0.4 },
+      ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [3,4,5,6,7,8], shoulder: [2,9], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [0,1,2,3], shoulder: [4,11], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [6,7,8,9,10], shoulder: [5,11], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [0,1,2,3], shoulder: [4,11], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "China", flag: "🇨🇳", lat: 36, lon: 117, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "South Africa", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Egypt", flag: "🇪🇬", lat: 30, lon: 31.2, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
       ],
     },
   },
@@ -1121,6 +2416,34 @@ export const PRODUCE_DB = [
       NORTHERN_EUROPE: [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 5.0, peak: [7, 8, 9, 10, 11, 0, 1], shoulder: [2, 6], weight: 0.6 },
         { region: "Netherlands", flag: "🇳🇱", lat: 52.0, lon: 4.3, peak: [8, 9, 10, 11, 0], shoulder: [1, 7], weight: 0.3 },
+      ],
+      US_SOUTHEAST: [
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.4 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,10,11], shoulder: [5,9], weight: 0.5 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [9,10,11], shoulder: [4,5,8], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [11,0,1,2], shoulder: [10,3], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [3,4,5,6,7,8], shoulder: [2,9], weight: 0.5 },
+        { region: "Tasmania", flag: "🇦🇺", lat: -42, lon: 147, peak: [3,4,5,6,7,8,9], shoulder: [2,10], weight: 0.3 },
+        { region: "New Zealand", flag: "🇳🇿", lat: -39.3, lon: 176, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Brazil (south)", flag: "🇧🇷", lat: -29, lon: -51, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.4 },
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -33, lon: -71.6, peak: [4,5,6,7], shoulder: [3,8], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 30, lon: 120, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [4,5,6,7,8], shoulder: [3,9], weight: 0.5 },
+        { region: "Kenya", flag: "🇰🇪", lat: -0.2, lon: 36.8, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
       ],
     },
   },
@@ -1147,6 +2470,32 @@ export const PRODUCE_DB = [
         { region: "Spain", flag: "🇪🇸", lat: 37.4, lon: -3.7, peak: [3, 4, 5, 6], shoulder: [2, 7], weight: 0.3 },
         { region: "Netherlands", flag: "🇳🇱", lat: 52.0, lon: 4.3, peak: [7, 8, 9, 10, 11], shoulder: [0, 6], weight: 0.3 },
       ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [3,4,5,6,7,8], shoulder: [2,9], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [0,1,2,3], shoulder: [4,11], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [6,7,8,9,10], shoulder: [5,11], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [0,1,2,3], shoulder: [4,11], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "China", flag: "🇨🇳", lat: 36, lon: 117, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "South Africa", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Egypt", flag: "🇪🇬", lat: 30, lon: 31.2, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
     },
   },
 
@@ -1170,6 +2519,32 @@ export const PRODUCE_DB = [
         { region: "France", flag: "🇫🇷", lat: 43.6, lon: 1.4, peak: [6, 7, 8], shoulder: [5, 9], weight: 0.3 },
         { region: "China", flag: "🇨🇳", lat: 36.6, lon: 118.0, peak: [5, 6, 7], shoulder: [4, 8], weight: 0.3 },
       ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [3,4,5,6,7,8], shoulder: [2,9], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [0,1,2,3], shoulder: [4,11], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [6,7,8,9,10], shoulder: [5,11], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [0,1,2,3], shoulder: [4,11], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "China", flag: "🇨🇳", lat: 36, lon: 117, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "South Africa", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Egypt", flag: "🇪🇬", lat: 30, lon: 31.2, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
     },
   },
 
@@ -1191,6 +2566,32 @@ export const PRODUCE_DB = [
       NORTHERN_EUROPE: [
         { region: "Netherlands", flag: "🇳🇱", lat: 51.4, lon: 5.5, peak: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], shoulder: [], weight: 0.5 },
         { region: "Poland", flag: "🇵🇱", lat: 51.9, lon: 19.1, peak: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], shoulder: [], weight: 0.4 },
+      ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [3,4,5,6,7,8], shoulder: [2,9], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [0,1,2,3], shoulder: [4,11], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [6,7,8,9,10], shoulder: [5,11], weight: 0.3 },
+        { region: "Mexico", flag: "🇲🇽", lat: 24.8, lon: -107.4, peak: [0,1,2,3], shoulder: [4,11], weight: 0.2 },
+      ],
+      OCEANIA: [
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Brazil", flag: "🇧🇷", lat: -23.5, lon: -47, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      EAST_ASIA: [
+        { region: "China", flag: "🇨🇳", lat: 36, lon: 117, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "South Africa", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.5 },
+        { region: "Egypt", flag: "🇪🇬", lat: 30, lon: 31.2, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.3 },
       ],
     },
   },
@@ -1215,6 +2616,34 @@ export const PRODUCE_DB = [
         { region: "Western Europe", flag: "🇪🇺", lat: 52.0, lon: 5.0, peak: [7, 8, 9, 10], shoulder: [6, 11, 0], weight: 0.5 },
         { region: "France", flag: "🇫🇷", lat: 48.9, lon: 2.3, peak: [7, 8, 9, 10], shoulder: [6, 11], weight: 0.3 },
         { region: "Egypt", flag: "🇪🇬", lat: 30.0, lon: 31.2, peak: [0, 1, 2, 3, 4], shoulder: [5, 11], weight: 0.2 },
+      ],
+      US_SOUTHEAST: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Southeast US", flag: "🇺🇸", lat: 32, lon: -83, peak: [8,9,10,11,0,1], shoulder: [2,7], weight: 0.3 },
+        { region: "Florida", flag: "🇺🇸", lat: 26.5, lon: -80.7, peak: [10,11,0,1,2,3], shoulder: [4,9], weight: 0.2 },
+      ],
+      US_CENTRAL: [
+        { region: "California", flag: "🇺🇸", lat: 36.6, lon: -121.6, peak: [0,1,2,3,4,5,6,7,8,9,10,11], shoulder: [], weight: 0.4 },
+        { region: "Midwest US", flag: "🇺🇸", lat: 40, lon: -89, peak: [7,8,9,10,11], shoulder: [0,6], weight: 0.3 },
+        { region: "Idaho", flag: "🇺🇸", lat: 43.6, lon: -114.7, peak: [8,9,10], shoulder: [7,11,0,1,2], weight: 0.3 },
+      ],
+      OCEANIA: [
+        { region: "Victoria", flag: "🇦🇺", lat: -37.8, lon: 145, peak: [1,2,3,4,5,6,7], shoulder: [0,8], weight: 0.5 },
+        { region: "Tasmania", flag: "🇦🇺", lat: -42, lon: 147, peak: [2,3,4,5,6,7], shoulder: [1,8], weight: 0.3 },
+        { region: "South Australia", flag: "🇦🇺", lat: -34.5, lon: 138.5, peak: [3,4,5,6], shoulder: [2,7], weight: 0.2 },
+      ],
+      SOUTH_AMERICA: [
+        { region: "Argentina", flag: "🇦🇷", lat: -34.6, lon: -58.4, peak: [2,3,4,5,6,7], shoulder: [1,8], weight: 0.4 },
+        { region: "Brazil (south)", flag: "🇧🇷", lat: -29, lon: -51, peak: [3,4,5,6,7], shoulder: [2,8], weight: 0.3 },
+        { region: "Chile", flag: "🇨🇱", lat: -33, lon: -71.6, peak: [3,4,5,6], shoulder: [2,7], weight: 0.2 },
+      ],
+      EAST_ASIA: [
+        { region: "Japan", flag: "🇯🇵", lat: 35, lon: 136, peak: [9,10,11,0,1,2], shoulder: [3,8], weight: 0.4 },
+        { region: "China", flag: "🇨🇳", lat: 36, lon: 117, peak: [8,9,10,11,0,1,2], shoulder: [3,7], weight: 0.4 },
+      ],
+      SOUTHERN_AFRICA: [
+        { region: "Western Cape", flag: "🇿🇦", lat: -33.9, lon: 18.9, peak: [3,4,5,6,7], shoulder: [2,8], weight: 0.5 },
+        { region: "Egypt", flag: "🇪🇬", lat: 30, lon: 31.2, peak: [9,10,11,0,1,2,3], shoulder: [4,8], weight: 0.3 },
       ],
     },
   },
