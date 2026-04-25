@@ -10,7 +10,7 @@
  * because it draws from the same data volunteers maintain on OSM.
  */
 
-import { getCached, TTL } from "./cache";
+import { getCached, clearCacheKey, TTL } from "./cache";
 
 // Public Overpass endpoint — rate-limited but generous for light use
 const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
@@ -33,80 +33,87 @@ export async function findNearbyMarkets(latitude, longitude) {
   const lon = longitude.toFixed(2);
   const cacheKey = `markets:${lat},${lon}`;
 
+  // Try cache first — but only return if we have a valid (non-empty) result.
+  // Previous errors or empty arrays from failed fetches should not block retries.
   return getCached(
     cacheKey,
-    async () => {
-      // Overpass QL query: find nodes and ways tagged as farmer's markets,
-      // farm shops, or marketplaces within the search radius.
-      // We use "around" to search within SEARCH_RADIUS_M of the user.
-      const query = `
-        [out:json][timeout:15];
-        (
-          node["shop"="farm"](around:${SEARCH_RADIUS_M},${latitude},${longitude});
-          node["amenity"="marketplace"](around:${SEARCH_RADIUS_M},${latitude},${longitude});
-          node["shop"="greengrocer"](around:${SEARCH_RADIUS_M},${latitude},${longitude});
-          way["amenity"="marketplace"](around:${SEARCH_RADIUS_M},${latitude},${longitude});
-          way["shop"="farm"](around:${SEARCH_RADIUS_M},${latitude},${longitude});
-        );
-        out center body;
-      `;
-
-      // Use GET to avoid CORS preflight (OPTIONS) which some Overpass
-      // instances don't handle. GET with query params is a "simple request".
-      const url = `${OVERPASS_URL}?data=${encodeURIComponent(query)}`;
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`Overpass returned ${response.status}`);
-      }
-
-      const data = await response.json();
-      const elements = data.elements || [];
-
-      // Parse each element into a clean market object
-      const markets = elements
-        .map((el) => {
-          const tags = el.tags || {};
-          // For ways, Overpass returns center coords when using "out center"
-          const elLat = el.lat ?? el.center?.lat;
-          const elLon = el.lon ?? el.center?.lon;
-          if (!elLat || !elLon) return null;
-
-          // Build a readable name — fall back to the shop/amenity type
-          const name =
-            tags.name ||
-            tags["name:en"] ||
-            formatType(tags.shop || tags.amenity);
-
-          // Build address from addr:* tags
-          const address = buildAddress(tags);
-
-          // Compute straight-line distance from user
-          const dist = haversineKm(latitude, longitude, elLat, elLon);
-
-          return {
-            id: `${el.type}/${el.id}`,
-            name,
-            address,
-            distance: dist,
-            // Opening hours if available
-            schedule: tags.opening_hours || null,
-            // Phone number if available
-            phone: tags.phone || tags["contact:phone"] || null,
-            // Website if available
-            website: tags.website || tags["contact:website"] || null,
-            lat: elLat,
-            lon: elLon,
-          };
-        })
-        .filter(Boolean);
-
-      // Sort by distance and return closest 8
-      markets.sort((a, b) => a.distance - b.distance);
-      return markets.slice(0, 8);
-    },
+    () => fetchMarketsFromOverpass(latitude, longitude),
     TTL.MARKETS,
   );
+}
+
+/**
+ * Fetch markets from Overpass API. Separated from cache logic so the
+ * retry button in MarketFinder can call findNearbyMarkets after clearing
+ * the cache key, and this function handles the actual network request.
+ */
+async function fetchMarketsFromOverpass(latitude, longitude) {
+  // Overpass QL query — compact single-line to avoid 406 errors from
+  // Apache's mod_negotiation when whitespace inflates the request.
+  const query = [
+    "[out:json][timeout:15];",
+    "(",
+    `node["shop"="farm"](around:${SEARCH_RADIUS_M},${latitude},${longitude});`,
+    `node["amenity"="marketplace"](around:${SEARCH_RADIUS_M},${latitude},${longitude});`,
+    `node["shop"="greengrocer"](around:${SEARCH_RADIUS_M},${latitude},${longitude});`,
+    `way["amenity"="marketplace"](around:${SEARCH_RADIUS_M},${latitude},${longitude});`,
+    `way["shop"="farm"](around:${SEARCH_RADIUS_M},${latitude},${longitude});`,
+    ");",
+    "out center body;",
+  ].join("");
+
+  // POST with form-encoded body. Content-Type: application/x-www-form-urlencoded
+  // is a CORS "simple" content type — no preflight OPTIONS request needed.
+  const response = await fetch(OVERPASS_URL, {
+    method: "POST",
+    body: `data=${encodeURIComponent(query)}`,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Overpass returned ${response.status}`);
+  }
+
+  const data = await response.json();
+  const elements = data.elements || [];
+
+  // Parse each element into a clean market object
+  const markets = elements
+    .map((el) => {
+      const tags = el.tags || {};
+      // For ways, Overpass returns center coords when using "out center"
+      const elLat = el.lat ?? el.center?.lat;
+      const elLon = el.lon ?? el.center?.lon;
+      if (!elLat || !elLon) return null;
+
+      // Build a readable name — fall back to the shop/amenity type
+      const name =
+        tags.name ||
+        tags["name:en"] ||
+        formatType(tags.shop || tags.amenity);
+
+      // Build address from addr:* tags
+      const address = buildAddress(tags);
+
+      // Compute straight-line distance from user
+      const dist = haversineKm(latitude, longitude, elLat, elLon);
+
+      return {
+        id: `${el.type}/${el.id}`,
+        name,
+        address,
+        distance: dist,
+        schedule: tags.opening_hours || null,
+        phone: tags.phone || tags["contact:phone"] || null,
+        website: tags.website || tags["contact:website"] || null,
+        lat: elLat,
+        lon: elLon,
+      };
+    })
+    .filter(Boolean);
+
+  // Sort by distance and return closest 8
+  markets.sort((a, b) => a.distance - b.distance);
+  return markets.slice(0, 8);
 }
 
 /**
