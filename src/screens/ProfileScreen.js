@@ -318,7 +318,7 @@ export default function ProfileScreen({
       </View>
 
       {/* ── SECTION 0: ACCOUNT ────────────────────────────────────── */}
-      <Section icon="👤" title="Account" defaultOpen={!user}>
+      <Section icon="👤" title="Account">
         {!hasSupabase() ? (
           // Supabase not configured — local-only mode
           <View style={styles.emptyState}>
@@ -489,7 +489,7 @@ export default function ProfileScreen({
         icon="♥"
         title="My Favorites"
         badge={favoriteItems.length}
-        defaultOpen={true}
+        defaultOpen={false}
       >
         {favoriteItems.length === 0 ? (
           // Empty state — guide the user to the Home tab
