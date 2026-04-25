@@ -21,6 +21,7 @@ import {
   Platform,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import { LinearGradient } from "expo-linear-gradient";
 import { COLORS, FONTS } from "../utils/theme";
 import { track, EVENTS } from "../utils/analytics";
 import MonthSelector from "../components/MonthSelector";
@@ -160,10 +161,13 @@ export default function HomeScreen({
   // ── Loading state ─────────────────────────────────────────────
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <LinearGradient
+        colors={[COLORS.sunsetTop, COLORS.sunsetMid, COLORS.sunsetBottom]}
+        style={styles.loadingContainer}
+      >
         <ActivityIndicator size="large" color={COLORS.accent} />
         <Text style={styles.loadingText}>Finding your location…</Text>
-      </View>
+      </LinearGradient>
     );
   }
 
@@ -173,36 +177,44 @@ export default function HomeScreen({
   // need an explicit ScrollView on web now.
   if (Platform.OS === "web") {
     return (
-      <ScrollView
+      <LinearGradient
+        colors={[COLORS.sunsetTop, COLORS.sunsetMid, COLORS.sunsetBottom]}
         style={styles.screen}
-        contentContainerStyle={styles.webScrollContent}
-        showsVerticalScrollIndicator={false}
       >
-        <StatusBar style="dark" />
-        {listHeader}
-        {scoredProduce.map((item, index) => (
-          <ProduceCard
-            key={item.id}
-            item={item}
-            rank={index + 1}
-            score={item.score}
-            baseScore={item.baseScore}
-            weatherAdjustment={item.weatherAdjustment}
-            sourceDetails={item.sourceDetails}
-            currentMonth={month}
-            climateShift={climateShift}
-            marketZone={marketZone}
-            sourceWeatherMap={sourceWeatherMap}
-          />
-        ))}
-        {listFooter}
-      </ScrollView>
+        <ScrollView
+          style={styles.screenInner}
+          contentContainerStyle={styles.webScrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <StatusBar style="dark" />
+          {listHeader}
+          {scoredProduce.map((item, index) => (
+            <ProduceCard
+              key={item.id}
+              item={item}
+              rank={index + 1}
+              score={item.score}
+              baseScore={item.baseScore}
+              weatherAdjustment={item.weatherAdjustment}
+              sourceDetails={item.sourceDetails}
+              currentMonth={month}
+              climateShift={climateShift}
+              marketZone={marketZone}
+              sourceWeatherMap={sourceWeatherMap}
+            />
+          ))}
+          {listFooter}
+        </ScrollView>
+      </LinearGradient>
     );
   }
 
   // ── Native layout: FlatList with virtualization ───────────────
   return (
-    <View style={styles.screen}>
+    <LinearGradient
+      colors={[COLORS.sunsetTop, COLORS.sunsetMid, COLORS.sunsetBottom]}
+      style={styles.screen}
+    >
       <StatusBar style="dark" />
       <FlatList
         data={scoredProduce}
@@ -216,7 +228,7 @@ export default function HomeScreen({
         maxToRenderPerBatch={10}
         windowSize={7}
       />
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -225,7 +237,9 @@ export default function HomeScreen({
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "transparent",
+  },
+  screenInner: {
+    flex: 1,
   },
   webScrollContent: {
     paddingBottom: 40,
@@ -237,7 +251,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transparent",
     gap: 16,
     minHeight: "100vh",
   },

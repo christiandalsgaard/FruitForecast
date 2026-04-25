@@ -33,6 +33,7 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { COLORS, FONTS, getScoreColor } from "../utils/theme";
 import { getSeasonLabel } from "../utils/season";
 import { getFavorites } from "../utils/favorites";
@@ -276,10 +277,13 @@ export default function ProfileScreen({
   // ── Loading state ──────────────────────────────────────────────
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <LinearGradient
+        colors={[COLORS.sunsetTop, COLORS.sunsetMid, COLORS.sunsetBottom]}
+        style={styles.loadingContainer}
+      >
         <ActivityIndicator size="large" color={COLORS.accent} />
         <Text style={styles.loadingText}>Loading profile…</Text>
-      </View>
+      </LinearGradient>
     );
   }
 
@@ -295,8 +299,12 @@ export default function ProfileScreen({
 
   // ── Render ─────────────────────────────────────────────────────
   return (
-    <ScrollView
+    <LinearGradient
+      colors={[COLORS.sunsetTop, COLORS.sunsetMid, COLORS.sunsetBottom]}
       style={styles.screen}
+    >
+    <ScrollView
+      style={styles.screenInner}
       contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}
     >
@@ -755,6 +763,7 @@ export default function ProfileScreen({
       {/* Bottom padding */}
       <View style={{ height: 40 }} />
     </ScrollView>
+    </LinearGradient>
   );
 }
 
@@ -763,7 +772,9 @@ export default function ProfileScreen({
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "transparent",
+  },
+  screenInner: {
+    flex: 1,
   },
   scrollContent: {
     paddingBottom: 40,
@@ -772,7 +783,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transparent",
     gap: 16,
     minHeight: 300,
   },

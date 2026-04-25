@@ -36,7 +36,6 @@ import { fetchAllSourceWeather } from "./utils/weatherAdjust";
 import { fetchWeather, reverseGeocode } from "./utils/weather";
 import { scheduleSeasonAlerts } from "./utils/notifications";
 import { getSavedRegion, saveRegion } from "./utils/preferences";
-import { LinearGradient } from "expo-linear-gradient";
 import { COLORS, FONTS } from "./utils/theme";
 import { track, EVENTS } from "./utils/analytics";
 import { getSession, onAuthStateChange } from "./utils/auth";
@@ -338,10 +337,7 @@ function App() {
       user, authLoading, syncStatus, triggerCloudSync]);
 
   return (
-    <LinearGradient
-      colors={[COLORS.sunsetTop, COLORS.sunsetMid, COLORS.sunsetBottom]}
-      style={styles.root}
-    >
+    <View style={styles.root}>
       <SafeAreaProvider>
         <NavigationContainer>
           <Tab.Navigator
@@ -351,10 +347,6 @@ function App() {
               tabBarActiveTintColor: COLORS.white,
               tabBarInactiveTintColor: "rgba(255,255,255,0.55)",
               tabBarLabelStyle: styles.tabLabel,
-              // Transparent so gradient shows through; unmount inactive tab
-              // to prevent both screens stacking visibly on top of each other
-              sceneStyle: { backgroundColor: "transparent" },
-              unmountOnBlur: true,
             }}
           >
             <Tab.Screen
@@ -385,7 +377,7 @@ function App() {
           onUseMyLocation={handleUseMyLocation}
         />
       </SafeAreaProvider>
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -395,7 +387,7 @@ const styles = StyleSheet.create({
     minHeight: "100vh",
   },
   tabBar: {
-    backgroundColor: "rgba(191,52,117,0.25)",
+    backgroundColor: COLORS.sunsetBottom,
     borderTopColor: "rgba(255,255,255,0.15)",
     borderTopWidth: 1,
     paddingTop: 4,
