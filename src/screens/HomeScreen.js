@@ -15,6 +15,7 @@ import {
   View,
   Text,
   FlatList,
+  ScrollView,
   StyleSheet,
   ActivityIndicator,
   Platform,
@@ -166,10 +167,17 @@ export default function HomeScreen({
     );
   }
 
-  // ── Web layout: plain View with page-level scrolling ──────────
+  // ── Web layout: ScrollView inside tab container ────────────────
+  // Previously used a plain View relying on page-level scrolling,
+  // but React Navigation's tab container constrains height, so we
+  // need an explicit ScrollView on web now.
   if (Platform.OS === "web") {
     return (
-      <View style={styles.screenWeb}>
+      <ScrollView
+        style={styles.screen}
+        contentContainerStyle={styles.webScrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <StatusBar style="dark" />
         {listHeader}
         {scoredProduce.map((item, index) => (
@@ -188,7 +196,7 @@ export default function HomeScreen({
           />
         ))}
         {listFooter}
-      </View>
+      </ScrollView>
     );
   }
 
@@ -208,7 +216,6 @@ export default function HomeScreen({
         maxToRenderPerBatch={10}
         windowSize={7}
       />
-      {regionPicker}
     </View>
   );
 }
@@ -220,10 +227,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  screenWeb: {
-    backgroundColor: COLORS.background,
+  webScrollContent: {
     paddingBottom: 40,
-    minHeight: "100vh",
   },
   listContent: {
     paddingBottom: 40,

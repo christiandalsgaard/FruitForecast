@@ -38,15 +38,21 @@ import { scheduleSeasonAlerts } from "./utils/notifications";
 import { getSavedRegion, saveRegion } from "./utils/preferences";
 import { COLORS, FONTS } from "./utils/theme";
 import { track, EVENTS } from "./utils/analytics";
+import { getSession, onAuthStateChange } from "./utils/auth";
+import { hasSupabase } from "./utils/supabase";
+import { fullSync, pushToCloud } from "./utils/profileSync";
 
 // ── Web-only setup ──────────────────────────────────────────────
 // On web, Expo's HTML template sets body { overflow: hidden; height: 100% }
 // which prevents page-level scrolling. We reset those constraints here.
 // Also load Google Fonts for the rounded, playful typeface.
 if (Platform.OS === "web") {
-  document.documentElement.style.height = "auto";
-  document.body.style.height = "auto";
-  document.body.style.overflow = "auto";
+  // Let React Navigation's tab container manage the viewport layout.
+  // We only need to ensure html/body fill the screen (flex layout).
+  document.documentElement.style.height = "100%";
+  document.body.style.height = "100%";
+  document.body.style.overflow = "hidden";
+  document.body.style.margin = "0";
 
   const fontLink = document.createElement("link");
   fontLink.rel = "stylesheet";
@@ -86,6 +92,11 @@ async function getDeviceLocation() {
 // ── Root App Component ──────────────────────────────────────────
 
 function App() {
+  // ── Auth state ─────────────────────────────────────────────────
+  const [user, setUser] = useState(null);           // Supabase user object or null
+  const [authLoading, setAuthLoading] = useState(hasSupabase()); // only load if configured
+  const [syncStatus, setSyncStatus] = useState(null); // null | "syncing" | "synced" | "error"
+
   // ── Shared state (used by both Home and Profile) ──────────────
   const [month, setMonth] = useState(new Date().getMonth());
   const [filter, setFilter] = useState("all");
@@ -181,6 +192,58 @@ function App() {
     return () => { cancelled = true; };
   }, [marketZone]);
 
+  // ── Step 4: Initialize auth and listen for state changes ──────
+  // On mount, check for an existing session (from localStorage/AsyncStorage).
+  // Subscribe to auth changes so sign-in/sign-out updates the UI.
+  useEffect(() => {
+    if (!hasSupabase()) return;
+
+    // Check existing session
+    getSession().then((session) => {
+      setUser(session?.user || null);
+      setAuthLoading(false);
+      // If there's an existing session, sync profile data
+      if (session?.user) {
+        setSyncStatus("syncing");
+        fullSync(session.user.id)
+          .then(() => setSyncStatus("synced"))
+          .catch(() => setSyncStatus("error"));
+      }
+    });
+
+    // Listen for auth state changes (sign in, sign out, token refresh)
+    const unsubscribe = onAuthStateChange((event, session) => {
+      const newUser = session?.user || null;
+      setUser(newUser);
+
+      if (event === "SIGNED_IN" && newUser) {
+        // Sync on sign in
+        setSyncStatus("syncing");
+        fullSync(newUser.id)
+          .then(() => setSyncStatus("synced"))
+          .catch(() => setSyncStatus("error"));
+      }
+      if (event === "SIGNED_OUT") {
+        setSyncStatus(null);
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
+  // ── Push local changes to cloud when user is signed in ────────
+  // Debounced push: sync to cloud when scored produce or favorites change.
+  // This catches any local changes made on the Home tab.
+  const pushTimeoutRef = React.useRef(null);
+  const triggerCloudSync = useCallback(() => {
+    if (!user) return;
+    // Debounce: wait 3 seconds after last change before pushing
+    if (pushTimeoutRef.current) clearTimeout(pushTimeoutRef.current);
+    pushTimeoutRef.current = setTimeout(() => {
+      pushToCloud(user.id).catch(() => {});
+    }, 3000);
+  }, [user]);
+
   // ── Compute scored produce (shared between tabs) ──────────────
   const scoredProduce = useMemo(
     () =>
@@ -265,8 +328,13 @@ function App() {
       marketZone={marketZone}
       onChangeRegion={handleOpenRegionPicker}
       scoredProduce={scoredProduce}
+      user={user}
+      authLoading={authLoading}
+      syncStatus={syncStatus}
+      onAuthChange={triggerCloudSync}
     />
-  ), [locationName, coords, marketZone, handleOpenRegionPicker, scoredProduce]);
+  ), [locationName, coords, marketZone, handleOpenRegionPicker, scoredProduce,
+      user, authLoading, syncStatus, triggerCloudSync]);
 
   return (
     <View style={styles.root}>

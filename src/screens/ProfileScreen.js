@@ -25,6 +25,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
+  TextInput,
   TouchableOpacity,
   ScrollView,
   StyleSheet,
@@ -39,6 +40,9 @@ import { getJournalEntries, getJournalStats, deleteJournalEntry } from "../utils
 import { getPreferences, updatePreferences } from "../utils/preferences";
 import { clearAllCache } from "../utils/cache";
 import { PRODUCE_DB } from "../data/produce";
+import { signUp, signIn, signOut } from "../utils/auth";
+import { hasSupabase } from "../utils/supabase";
+import { pushToCloud, updateCloudField } from "../utils/profileSync";
 
 // ── Collapsible Section wrapper ─────────────────────────────────
 // Reusable accordion component used by each profile section.
@@ -70,7 +74,23 @@ function Section({ icon, title, badge, children, defaultOpen = false }) {
 
 // ── Main Profile Screen ─────────────────────────────────────────
 
-export default function ProfileScreen({ locationName, coords, marketZone, onChangeRegion, scoredProduce }) {
+export default function ProfileScreen({
+  locationName, coords, marketZone, onChangeRegion, scoredProduce,
+  user, authLoading, syncStatus, onAuthChange,
+}) {
+  // ── Auth form state ────────────────────────────────────────────
+  const [authMode, setAuthMode] = useState("signin"); // "signin" | "signup"
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [authError, setAuthError] = useState(null);
+  const [authBusy, setAuthBusy] = useState(false);
+  const [confirmationSent, setConfirmationSent] = useState(false);
+
+  // ── Profile editing state ──────────────────────────────────────
+  const [editingName, setEditingName] = useState(false);
+  const [newDisplayName, setNewDisplayName] = useState("");
+
   // ── State for each section's data ──────────────────────────────
   const [favorites, setFavorites] = useState(null);        // Set<string> or null while loading
   const [journal, setJournal] = useState(null);             // Array or null
@@ -181,6 +201,71 @@ export default function ProfileScreen({ locationName, coords, marketZone, onChan
     }
   }, []);
 
+  // ── Auth handlers ──────────────────────────────────────────────
+  const handleSignUp = useCallback(async () => {
+    setAuthError(null);
+    setAuthBusy(true);
+    const result = await signUp(email, password);
+    setAuthBusy(false);
+
+    if (result.error) {
+      setAuthError(result.error);
+      return;
+    }
+    if (result.needsConfirmation) {
+      // Supabase requires email confirmation
+      setConfirmationSent(true);
+      return;
+    }
+    // Sign-up with auto-confirm succeeded — clear form
+    setEmail("");
+    setPassword("");
+    setDisplayName("");
+  }, [email, password]);
+
+  const handleSignIn = useCallback(async () => {
+    setAuthError(null);
+    setAuthBusy(true);
+    const result = await signIn(email, password);
+    setAuthBusy(false);
+
+    if (result.error) {
+      setAuthError(result.error);
+      return;
+    }
+    // Sign-in succeeded — clear form
+    setEmail("");
+    setPassword("");
+  }, [email, password]);
+
+  const handleSignOut = useCallback(async () => {
+    const doSignOut = async () => {
+      await signOut();
+    };
+
+    if (Platform.OS === "web") {
+      if (confirm("Sign out? Your data is saved locally and will sync when you sign back in.")) {
+        await doSignOut();
+      }
+    } else {
+      Alert.alert(
+        "Sign Out",
+        "Your data is saved locally and will sync when you sign back in.",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Sign Out", onPress: doSignOut },
+        ],
+      );
+    }
+  }, []);
+
+  const handleUpdateDisplayName = useCallback(async () => {
+    if (!user || !newDisplayName.trim()) return;
+    await updateCloudField(user.id, { display_name: newDisplayName.trim() });
+    setEditingName(false);
+    setNewDisplayName("");
+  }, [user, newDisplayName]);
+
   // ── Build favorites list with current scores ───────────────────
   // Cross-reference favorite IDs with the scored produce data passed
   // from the parent so we show live scores, not stale cached ones.
@@ -223,6 +308,173 @@ export default function ProfileScreen({ locationName, coords, marketZone, onChan
           Your seasonal produce preferences & history
         </Text>
       </View>
+
+      {/* ── SECTION 0: ACCOUNT ────────────────────────────────────── */}
+      <Section icon="👤" title="Account" defaultOpen={!user}>
+        {!hasSupabase() ? (
+          // Supabase not configured — local-only mode
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyEmoji}>🔒</Text>
+            <Text style={styles.emptyTitle}>Local Only</Text>
+            <Text style={styles.emptyText}>
+              Account features are not configured. Your data is stored
+              on this device only.
+            </Text>
+          </View>
+        ) : authLoading ? (
+          // Auth is initializing
+          <View style={styles.emptyState}>
+            <ActivityIndicator size="small" color={COLORS.accent} />
+            <Text style={styles.emptyText}>Checking account…</Text>
+          </View>
+        ) : user ? (
+          // Signed in — show profile info
+          <View style={styles.accountCard}>
+            {/* User info row */}
+            <View style={styles.accountHeader}>
+              <Text style={styles.accountAvatar}>🍎</Text>
+              <View style={styles.accountInfo}>
+                <Text style={styles.accountEmail}>{user.email}</Text>
+                <Text style={styles.accountMember}>
+                  Member since {new Date(user.created_at).toLocaleDateString(undefined, { month: "short", year: "numeric" })}
+                </Text>
+              </View>
+            </View>
+
+            {/* Sync status indicator */}
+            <View style={styles.syncRow}>
+              <View style={[
+                styles.syncDot,
+                { backgroundColor:
+                  syncStatus === "synced" ? COLORS.peak :
+                  syncStatus === "syncing" ? COLORS.comingSoon :
+                  syncStatus === "error" ? COLORS.outOfSeason :
+                  COLORS.textFaint
+                }
+              ]} />
+              <Text style={styles.syncText}>
+                {syncStatus === "synced" ? "Data synced across devices" :
+                 syncStatus === "syncing" ? "Syncing…" :
+                 syncStatus === "error" ? "Sync failed — data saved locally" :
+                 "Not synced"}
+              </Text>
+            </View>
+
+            {/* Sign out button */}
+            <TouchableOpacity
+              style={styles.signOutBtn}
+              activeOpacity={0.7}
+              onPress={handleSignOut}
+            >
+              <Text style={styles.signOutText}>Sign Out</Text>
+            </TouchableOpacity>
+          </View>
+        ) : confirmationSent ? (
+          // Email confirmation required
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyEmoji}>📧</Text>
+            <Text style={styles.emptyTitle}>Check your email</Text>
+            <Text style={styles.emptyText}>
+              We sent a confirmation link to your email. Click it to
+              activate your account, then come back and sign in.
+            </Text>
+            <TouchableOpacity
+              style={styles.authSwitchBtn}
+              onPress={() => {
+                setConfirmationSent(false);
+                setAuthMode("signin");
+              }}
+            >
+              <Text style={styles.authSwitchText}>Back to Sign In</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          // Sign in / sign up form
+          <View style={styles.authForm}>
+            {/* Mode toggle tabs */}
+            <View style={styles.authTabs}>
+              <TouchableOpacity
+                style={[styles.authTab, authMode === "signin" && styles.authTabActive]}
+                onPress={() => { setAuthMode("signin"); setAuthError(null); }}
+              >
+                <Text style={[styles.authTabText, authMode === "signin" && styles.authTabTextActive]}>
+                  Sign In
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.authTab, authMode === "signup" && styles.authTabActive]}
+                onPress={() => { setAuthMode("signup"); setAuthError(null); }}
+              >
+                <Text style={[styles.authTabText, authMode === "signup" && styles.authTabTextActive]}>
+                  Create Account
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Display name field (sign up only) */}
+            {authMode === "signup" && (
+              <TextInput
+                style={styles.authInput}
+                placeholder="Display name (optional)"
+                placeholderTextColor={COLORS.textFaint}
+                value={displayName}
+                onChangeText={setDisplayName}
+                autoCapitalize="words"
+                maxLength={50}
+              />
+            )}
+
+            {/* Email field */}
+            <TextInput
+              style={styles.authInput}
+              placeholder="Email address"
+              placeholderTextColor={COLORS.textFaint}
+              value={email}
+              onChangeText={(t) => { setEmail(t); setAuthError(null); }}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+            />
+
+            {/* Password field */}
+            <TextInput
+              style={styles.authInput}
+              placeholder={authMode === "signup" ? "Password (min 6 characters)" : "Password"}
+              placeholderTextColor={COLORS.textFaint}
+              value={password}
+              onChangeText={(t) => { setPassword(t); setAuthError(null); }}
+              secureTextEntry
+              autoComplete={authMode === "signup" ? "new-password" : "current-password"}
+            />
+
+            {/* Error message */}
+            {authError && (
+              <View style={styles.authErrorRow}>
+                <Text style={styles.authErrorText}>{authError}</Text>
+              </View>
+            )}
+
+            {/* Submit button */}
+            <TouchableOpacity
+              style={[styles.authSubmitBtn, authBusy && { opacity: 0.6 }]}
+              activeOpacity={0.7}
+              disabled={authBusy}
+              onPress={authMode === "signup" ? handleSignUp : handleSignIn}
+            >
+              <Text style={styles.authSubmitText}>
+                {authBusy ? "Please wait…" : authMode === "signup" ? "Create Account" : "Sign In"}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Benefits pitch */}
+            <Text style={styles.authBenefits}>
+              {authMode === "signup"
+                ? "Create an account to sync your favorites, journal, and preferences across all your devices."
+                : "Sign in to restore your synced data on this device."}
+            </Text>
+          </View>
+        )}
+      </Section>
 
       {/* ── SECTION 1: MY FAVORITES ───────────────────────────────── */}
       <Section
@@ -968,5 +1220,147 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.serif,
     marginTop: 6,
     lineHeight: 16,
+  },
+
+  // ── Account / Auth section ──────────────────────────────────────
+  accountCard: {
+    gap: 12,
+  },
+  accountHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  accountAvatar: {
+    fontSize: 36,
+  },
+  accountInfo: {
+    flex: 1,
+  },
+  accountEmail: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: COLORS.text,
+    fontFamily: FONTS.serif,
+  },
+  accountMember: {
+    fontSize: 11,
+    color: COLORS.textMuted,
+    fontFamily: FONTS.mono,
+    marginTop: 2,
+  },
+  syncRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: COLORS.breakdownBg,
+    borderRadius: 8,
+    padding: 10,
+  },
+  syncDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  syncText: {
+    fontSize: 12,
+    color: COLORS.textSecondary,
+    fontFamily: FONTS.serif,
+  },
+  signOutBtn: {
+    borderWidth: 1,
+    borderColor: COLORS.textMuted,
+    borderRadius: 10,
+    paddingVertical: 10,
+    alignItems: "center",
+  },
+  signOutText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: COLORS.textMuted,
+    fontFamily: FONTS.serif,
+  },
+
+  // ── Auth form ───────────────────────────────────────────────────
+  authForm: {
+    gap: 10,
+  },
+  authTabs: {
+    flexDirection: "row",
+    borderRadius: 10,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: COLORS.separator,
+    marginBottom: 4,
+  },
+  authTab: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: "center",
+    backgroundColor: "transparent",
+  },
+  authTabActive: {
+    backgroundColor: COLORS.accent,
+  },
+  authTabText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: COLORS.textMuted,
+    fontFamily: FONTS.serif,
+  },
+  authTabTextActive: {
+    color: COLORS.white,
+  },
+  authInput: {
+    borderWidth: 1,
+    borderColor: COLORS.separator,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 14,
+    fontFamily: FONTS.serif,
+    color: COLORS.text,
+    backgroundColor: COLORS.white,
+  },
+  authErrorRow: {
+    backgroundColor: "#FFF3E0",
+    borderRadius: 8,
+    padding: 10,
+  },
+  authErrorText: {
+    fontSize: 12,
+    color: COLORS.outOfSeason,
+    fontFamily: FONTS.serif,
+  },
+  authSubmitBtn: {
+    backgroundColor: COLORS.accent,
+    borderRadius: 10,
+    paddingVertical: 14,
+    alignItems: "center",
+    marginTop: 2,
+  },
+  authSubmitText: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: COLORS.white,
+    fontFamily: FONTS.serif,
+  },
+  authBenefits: {
+    fontSize: 11,
+    color: COLORS.textMuted,
+    fontFamily: FONTS.serif,
+    textAlign: "center",
+    lineHeight: 16,
+    marginTop: 4,
+  },
+  authSwitchBtn: {
+    marginTop: 12,
+    paddingVertical: 8,
+  },
+  authSwitchText: {
+    fontSize: 13,
+    color: COLORS.accent,
+    fontFamily: FONTS.serif,
+    fontWeight: "600",
   },
 });
