@@ -51,11 +51,10 @@ export async function findNearbyMarkets(latitude, longitude) {
         out center body;
       `;
 
-      const response = await fetch(OVERPASS_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `data=${encodeURIComponent(query)}`,
-      });
+      // Use GET to avoid CORS preflight (OPTIONS) which some Overpass
+      // instances don't handle. GET with query params is a "simple request".
+      const url = `${OVERPASS_URL}?data=${encodeURIComponent(query)}`;
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error(`Overpass returned ${response.status}`);
