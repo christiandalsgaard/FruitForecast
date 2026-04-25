@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   pill: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.75)",
+    backgroundColor: "rgba(255,255,255,0.85)",
     paddingVertical: 10,
     paddingHorizontal: 18,
     borderRadius: 50,

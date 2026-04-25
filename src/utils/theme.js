@@ -72,6 +72,11 @@ export const COLORS = {
 
   // ── Score breakdown colors ────────────────────────────────────
   breakdownBg: "rgba(0,0,0,0.03)",
+
+  // ── Sunset gradient background ────────────────────────────────
+  sunsetTop: "#BF3475",          // Deep magenta/pink
+  sunsetMid: "#EE6C45",          // Warm coral orange
+  sunsetBottom: "#FFCE61",       // Golden yellow
 };
 
 // Rounded, friendly fonts. Avenir Next (iOS) and Nunito (web) have a soft,

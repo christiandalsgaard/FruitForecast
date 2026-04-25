@@ -36,6 +36,7 @@ import { fetchAllSourceWeather } from "./utils/weatherAdjust";
 import { fetchWeather, reverseGeocode } from "./utils/weather";
 import { scheduleSeasonAlerts } from "./utils/notifications";
 import { getSavedRegion, saveRegion } from "./utils/preferences";
+import { LinearGradient } from "expo-linear-gradient";
 import { COLORS, FONTS } from "./utils/theme";
 import { track, EVENTS } from "./utils/analytics";
 import { getSession, onAuthStateChange } from "./utils/auth";
@@ -337,16 +338,21 @@ function App() {
       user, authLoading, syncStatus, triggerCloudSync]);
 
   return (
-    <View style={styles.root}>
+    <LinearGradient
+      colors={[COLORS.sunsetTop, COLORS.sunsetMid, COLORS.sunsetBottom]}
+      style={styles.root}
+    >
       <SafeAreaProvider>
         <NavigationContainer>
           <Tab.Navigator
             screenOptions={{
               headerShown: false,
               tabBarStyle: styles.tabBar,
-              tabBarActiveTintColor: COLORS.accent,
-              tabBarInactiveTintColor: COLORS.textMuted,
+              tabBarActiveTintColor: COLORS.white,
+              tabBarInactiveTintColor: "rgba(255,255,255,0.55)",
               tabBarLabelStyle: styles.tabLabel,
+              // Make the screen container transparent so gradient shows through
+              sceneStyle: { backgroundColor: "transparent" },
             }}
           >
             <Tab.Screen
@@ -377,7 +383,7 @@ function App() {
           onUseMyLocation={handleUseMyLocation}
         />
       </SafeAreaProvider>
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -387,8 +393,8 @@ const styles = StyleSheet.create({
     minHeight: "100vh",
   },
   tabBar: {
-    backgroundColor: COLORS.background,
-    borderTopColor: COLORS.separator,
+    backgroundColor: "rgba(191,52,117,0.25)",
+    borderTopColor: "rgba(255,255,255,0.15)",
     borderTopWidth: 1,
     paddingTop: 4,
     height: Platform.OS === "web" ? 56 : 85,

@@ -763,7 +763,7 @@ export default function ProfileScreen({
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: "transparent",
   },
   scrollContent: {
     paddingBottom: 40,
@@ -772,13 +772,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: COLORS.background,
+    backgroundColor: "transparent",
     gap: 16,
     minHeight: 300,
   },
   loadingText: {
     fontSize: 15,
-    color: COLORS.textSecondary,
+    color: COLORS.white,
     fontFamily: FONTS.serif,
   },
 
@@ -796,12 +796,15 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 32,
     fontWeight: "400",
-    color: COLORS.text,
+    color: COLORS.white,
     fontFamily: FONTS.serif,
+    textShadowColor: "rgba(0,0,0,0.15)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: "rgba(255,255,255,0.8)",
     fontFamily: FONTS.serif,
     fontStyle: "italic",
     marginTop: 4,
@@ -812,9 +815,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginBottom: 12,
     borderRadius: 14,
-    backgroundColor: "rgba(255,255,255,0.65)",
+    backgroundColor: "rgba(255,255,255,0.85)",
     borderWidth: 1,
-    borderColor: "rgba(255,107,53,0.12)",
+    borderColor: "rgba(255,255,255,0.3)",
     overflow: "hidden",
   },
   sectionHeader: {

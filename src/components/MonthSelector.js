@@ -53,7 +53,7 @@ export default function MonthSelector({ selectedMonth, onSelect }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "rgba(255,255,255,0.65)",
+    backgroundColor: "rgba(255,255,255,0.85)",
     borderRadius: 16,
     padding: 16,
     marginHorizontal: 20,
