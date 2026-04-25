@@ -20,6 +20,7 @@ import React, { useState } from "react";
 import {
   View,
   Text,
+  TextInput,
   TouchableOpacity,
   StyleSheet,
   LayoutAnimation,
@@ -29,6 +30,7 @@ import {
 import { MONTH_NAMES } from "../data/produce";
 import { getSeasonLabel } from "../utils/season";
 import { getCalendarScore } from "../utils/scoring";
+import { addJournalEntry } from "../utils/journal";
 import {
   COLORS,
   FONTS,
@@ -60,6 +62,10 @@ export default function ProduceCard({
   sourceWeatherMap,
 }) {
   const [expanded, setExpanded] = useState(false);
+  // Log Purchase flow — shows inline form, then confirmation
+  const [showLogForm, setShowLogForm] = useState(false);
+  const [logNote, setLogNote] = useState("");
+  const [logStatus, setLogStatus] = useState(null); // null | "saving" | "saved"
 
   const label = getSeasonLabel(score);
   const color = getScoreColor(score);
@@ -163,6 +169,77 @@ export default function ProduceCard({
               <Text style={styles.tipText}>{item.tips}</Text>
             </View>
           )}
+
+          {/* ── LOG PURCHASE button/form ─────────────────────────── */}
+          <View style={styles.logSection}>
+            {logStatus === "saved" ? (
+              // Confirmation feedback — shown for 2 seconds after save
+              <View style={styles.logSavedBanner}>
+                <Text style={styles.logSavedText}>
+                  Logged to your Season Journal
+                </Text>
+              </View>
+            ) : showLogForm ? (
+              // Inline form — optional note + save/cancel buttons
+              <View style={styles.logForm}>
+                <TextInput
+                  style={styles.logInput}
+                  placeholder="Add a note (optional)..."
+                  placeholderTextColor={COLORS.textFaint}
+                  value={logNote}
+                  onChangeText={setLogNote}
+                  maxLength={200}
+                  multiline={false}
+                />
+                <View style={styles.logFormBtns}>
+                  <TouchableOpacity
+                    style={styles.logCancelBtn}
+                    activeOpacity={0.7}
+                    onPress={() => {
+                      setShowLogForm(false);
+                      setLogNote("");
+                    }}
+                  >
+                    <Text style={styles.logCancelText}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.logSaveBtn, logStatus === "saving" && { opacity: 0.5 }]}
+                    activeOpacity={0.7}
+                    disabled={logStatus === "saving"}
+                    onPress={async () => {
+                      setLogStatus("saving");
+                      await addJournalEntry({
+                        produceId: item.id,
+                        produceName: item.name,
+                        emoji: item.emoji,
+                        note: logNote,
+                        score,
+                      });
+                      setLogStatus("saved");
+                      setShowLogForm(false);
+                      setLogNote("");
+                      // Reset saved banner after 2.5 seconds
+                      setTimeout(() => setLogStatus(null), 2500);
+                    }}
+                  >
+                    <Text style={styles.logSaveText}>
+                      {logStatus === "saving" ? "Saving…" : "Save"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              // Default state — show the log button
+              <TouchableOpacity
+                style={styles.logBtn}
+                activeOpacity={0.7}
+                onPress={() => setShowLogForm(true)}
+              >
+                <Text style={styles.logBtnIcon}>📓</Text>
+                <Text style={styles.logBtnText}>Log Purchase</Text>
+              </TouchableOpacity>
+            )}
+          </View>
 
           {/* ── 2. Source regions ────────────────────────────────── */}
           {hasSources && (
@@ -447,6 +524,84 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.textSecondary,
     lineHeight: 20,
+    fontFamily: FONTS.serif,
+  },
+
+  // ── Log Purchase ──────────────────────────────────────────────
+  logSection: {
+    marginBottom: 16,
+  },
+  logBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.accent,
+    backgroundColor: "rgba(255,107,53,0.06)",
+  },
+  logBtnIcon: {
+    fontSize: 14,
+  },
+  logBtnText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: COLORS.accent,
+    fontFamily: FONTS.serif,
+  },
+  logForm: {
+    gap: 8,
+  },
+  logInput: {
+    borderWidth: 1,
+    borderColor: COLORS.separator,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    fontSize: 13,
+    fontFamily: FONTS.serif,
+    color: COLORS.text,
+    backgroundColor: COLORS.white,
+  },
+  logFormBtns: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 8,
+  },
+  logCancelBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  logCancelText: {
+    fontSize: 13,
+    color: COLORS.textMuted,
+    fontFamily: FONTS.serif,
+  },
+  logSaveBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    backgroundColor: COLORS.accent,
+  },
+  logSaveText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: COLORS.white,
+    fontFamily: FONTS.serif,
+  },
+  logSavedBanner: {
+    backgroundColor: COLORS.peakBg,
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: "center",
+  },
+  logSavedText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: COLORS.peak,
     fontFamily: FONTS.serif,
   },
 
