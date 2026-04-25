@@ -19,8 +19,8 @@ import { createClient } from "@supabase/supabase-js";
 // These are safe to expose in client code — the anon key only grants
 // access scoped by Row Level Security policies on the Supabase side.
 // In production, set these via environment variables or Expo constants.
-const SUPABASE_URL = "https://tqfcohqtxzudnqaypqej.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxZmNvaHF0eHp1ZG5xYXlwcWVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU1MjkxMjAsImV4cCI6MjA2MTEwNTEyMH0.u1C6GJKP_GJNEJd_bJrL9cSuI0VCjW-E8ORRSDnvotQ";
+const SUPABASE_URL = "https://nstsffdburikgtvfntsv.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zdHNmZmRidXJpa2d0dmZudHN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNTA0NDEsImV4cCI6MjA5MjcyNjQ0MX0.VMx7m9ZmJyn1QTlQF7IYade41e0bTDn5y7ymeq-nlNg";
 
 /**
  * Check if Supabase is configured. When false, all auth and sync
