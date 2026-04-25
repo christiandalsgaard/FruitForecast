@@ -74,7 +74,7 @@ export const COLORS = {
   breakdownBg: "rgba(0,0,0,0.03)",
 
   // ── Sunset gradient background ────────────────────────────────
-  sunsetTop: "#D4729A",          // Soft rose pink
+  sunsetTop: "#D4724A",          // Dark burnt orange
   sunsetMid: "#F2956E",          // Light peach coral
   sunsetBottom: "#FFDB80",       // Warm golden cream
 };
