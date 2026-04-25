@@ -18,6 +18,7 @@ import {
 } from "react-native";
 import { COLORS, FONTS } from "../utils/theme";
 import { findNearbyMarkets } from "../utils/markets";
+import { clearCacheKey } from "../utils/cache";
 
 export default function MarketFinder({ latitude, longitude }) {
   const [expanded, setExpanded] = useState(false);
@@ -27,9 +28,8 @@ export default function MarketFinder({ latitude, longitude }) {
 
   // Fetch markets when the user expands the section — lazy loading
   // so we don't hit the Overpass API unless the user actually wants this.
-  useEffect(() => {
-    if (!expanded || markets !== null || !latitude || !longitude) return;
-
+  const fetchMarkets = React.useCallback(() => {
+    if (!latitude || !longitude) return;
     setLoading(true);
     setError(null);
     findNearbyMarkets(latitude, longitude)
@@ -41,7 +41,22 @@ export default function MarketFinder({ latitude, longitude }) {
         setError("Could not load nearby markets");
         setLoading(false);
       });
-  }, [expanded, latitude, longitude, markets]);
+  }, [latitude, longitude]);
+
+  useEffect(() => {
+    if (!expanded || markets !== null || !latitude || !longitude) return;
+    fetchMarkets();
+  }, [expanded, latitude, longitude, markets, fetchMarkets]);
+
+  // Retry handler — clear the stale cache entry and refetch
+  const handleRetry = React.useCallback(() => {
+    const lat = latitude.toFixed(2);
+    const lon = longitude.toFixed(2);
+    clearCacheKey(`markets:${lat},${lon}`);
+    setMarkets(null);
+    setError(null);
+    fetchMarkets();
+  }, [latitude, longitude, fetchMarkets]);
 
   // Open directions — use coords for precise navigation, fall back to address
   const openDirections = (market) => {
@@ -79,7 +94,14 @@ export default function MarketFinder({ latitude, longitude }) {
             </View>
           )}
 
-          {error && <Text style={styles.errorText}>{error}</Text>}
+          {error && (
+            <View style={styles.errorRow}>
+              <Text style={styles.errorText}>{error}</Text>
+              <TouchableOpacity onPress={handleRetry} activeOpacity={0.7}>
+                <Text style={styles.retryText}>Tap to retry</Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
           {markets && markets.length === 0 && (
             <Text style={styles.emptyText}>
@@ -184,11 +206,21 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     fontFamily: FONTS.serif,
   },
+  errorRow: {
+    paddingVertical: 8,
+    gap: 6,
+  },
   errorText: {
     fontSize: 13,
     color: COLORS.outOfSeason,
     fontFamily: FONTS.serif,
-    paddingVertical: 8,
+  },
+  retryText: {
+    fontSize: 13,
+    color: COLORS.accent,
+    fontFamily: FONTS.serif,
+    fontWeight: "600",
+    textDecorationLine: "underline",
   },
   emptyText: {
     fontSize: 13,

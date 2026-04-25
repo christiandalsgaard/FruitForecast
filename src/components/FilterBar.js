@@ -11,14 +11,14 @@ const FILTERS = [
 export default function FilterBar({ filter, onFilterChange, peakCount, inSeasonCount }) {
   return (
     <View style={styles.container}>
-      {/* Stats */}
+      {/* Stats — white text so it reads clearly on the gradient */}
       <View style={styles.stats}>
         <View style={styles.stat}>
-          <Text style={[styles.statNumber, { color: COLORS.peak }]}>{peakCount}</Text>
+          <Text style={styles.statNumber}>{peakCount}</Text>
           <Text style={styles.statLabel}>AT PEAK</Text>
         </View>
         <View style={styles.stat}>
-          <Text style={[styles.statNumber, { color: COLORS.inSeason }]}>{inSeasonCount}</Text>
+          <Text style={styles.statNumber}>{inSeasonCount}</Text>
           <Text style={styles.statLabel}>IN SEASON</Text>
         </View>
       </View>
@@ -62,11 +62,15 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "700",
     lineHeight: 32,
+    color: COLORS.white,
+    textShadowColor: "rgba(0,0,0,0.15)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
   statLabel: {
     fontSize: 10,
     letterSpacing: 2,
-    color: COLORS.textMuted,
+    color: "rgba(255,255,255,0.75)",
     fontFamily: FONTS.mono,
   },
   buttons: {
