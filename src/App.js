@@ -351,8 +351,10 @@ function App() {
               tabBarActiveTintColor: COLORS.white,
               tabBarInactiveTintColor: "rgba(255,255,255,0.55)",
               tabBarLabelStyle: styles.tabLabel,
-              // Make the screen container transparent so gradient shows through
+              // Transparent so gradient shows through; unmount inactive tab
+              // to prevent both screens stacking visibly on top of each other
               sceneStyle: { backgroundColor: "transparent" },
+              unmountOnBlur: true,
             }}
           >
             <Tab.Screen
