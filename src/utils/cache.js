@@ -1,5 +1,9 @@
 /**
- * Offline caching layer built on AsyncStorage.
+ * Offline caching layer — platform-aware storage.
+ *
+ * On native (iOS/Android): uses AsyncStorage for persistent key-value storage.
+ * On web: uses the browser's localStorage API, which has the same sync
+ * get/set/remove interface but wrapped in async functions for consistency.
  *
  * Every cached item is stored as { data, expiresAt } so stale entries
  * are automatically skipped. This lets the app work offline after the
@@ -10,9 +14,69 @@
  *   const weather = await getCached("weather:40.71,-74.01", () => fetchWeather(40.71, -74.01), TTL.WEATHER);
  */
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform } from "react-native";
 
-// Cache key prefix to avoid collisions with other AsyncStorage users
+// ── Platform-aware storage adapter ──────────────────────────────
+// On web we use localStorage directly. On native we lazy-import
+// AsyncStorage so the web bundle never pulls in the native module.
+let storage;
+
+if (Platform.OS === "web") {
+  // localStorage adapter — same interface as AsyncStorage but synchronous
+  // under the hood. Wrapped in Promises for API consistency.
+  storage = {
+    getItem: (key) => {
+      try {
+        return Promise.resolve(localStorage.getItem(key));
+      } catch {
+        return Promise.resolve(null);
+      }
+    },
+    setItem: (key, value) => {
+      try {
+        localStorage.setItem(key, value);
+        return Promise.resolve();
+      } catch {
+        return Promise.resolve();
+      }
+    },
+    removeItem: (key) => {
+      try {
+        localStorage.removeItem(key);
+        return Promise.resolve();
+      } catch {
+        return Promise.resolve();
+      }
+    },
+    // getAllKeys isn't on localStorage natively — scan for our prefix
+    getAllKeys: () => {
+      try {
+        const keys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          keys.push(localStorage.key(i));
+        }
+        return Promise.resolve(keys);
+      } catch {
+        return Promise.resolve([]);
+      }
+    },
+    multiRemove: (keys) => {
+      try {
+        keys.forEach((k) => localStorage.removeItem(k));
+        return Promise.resolve();
+      } catch {
+        return Promise.resolve();
+      }
+    },
+  };
+} else {
+  // Native — use the real AsyncStorage module
+  const AsyncStorage =
+    require("@react-native-async-storage/async-storage").default;
+  storage = AsyncStorage;
+}
+
+// Cache key prefix to avoid collisions with other storage users
 const PREFIX = "@fruitforecast:";
 
 // ── TTL constants (milliseconds) ────────────────────────────────
@@ -40,7 +104,7 @@ export async function getCached(key, fetcher, ttl) {
 
   try {
     // Try to read from cache first
-    const raw = await AsyncStorage.getItem(fullKey);
+    const raw = await storage.getItem(fullKey);
     if (raw) {
       const { data, expiresAt } = JSON.parse(raw);
       // Return cached data if it hasn't expired
@@ -60,7 +124,7 @@ export async function getCached(key, fetcher, ttl) {
   try {
     // Store in cache with expiry timestamp
     const expiresAt = ttl === Infinity ? null : Date.now() + ttl;
-    await AsyncStorage.setItem(fullKey, JSON.stringify({ data, expiresAt }));
+    await storage.setItem(fullKey, JSON.stringify({ data, expiresAt }));
   } catch (error) {
     // Cache write failed — not critical, the data was still fetched
     console.warn("Cache write failed:", error.message);
@@ -75,7 +139,7 @@ export async function getCached(key, fetcher, ttl) {
  */
 export async function readCache(key) {
   try {
-    const raw = await AsyncStorage.getItem(PREFIX + key);
+    const raw = await storage.getItem(PREFIX + key);
     if (!raw) return null;
     const { data, expiresAt } = JSON.parse(raw);
     if (expiresAt !== null && Date.now() >= expiresAt) return null;
@@ -91,7 +155,7 @@ export async function readCache(key) {
 export async function writeCache(key, data, ttl = Infinity) {
   try {
     const expiresAt = ttl === Infinity ? null : Date.now() + ttl;
-    await AsyncStorage.setItem(
+    await storage.setItem(
       PREFIX + key,
       JSON.stringify({ data, expiresAt }),
     );
@@ -105,7 +169,7 @@ export async function writeCache(key, data, ttl = Infinity) {
  */
 export async function clearCacheKey(key) {
   try {
-    await AsyncStorage.removeItem(PREFIX + key);
+    await storage.removeItem(PREFIX + key);
   } catch (error) {
     console.warn("Cache clear failed:", error.message);
   }
@@ -117,10 +181,10 @@ export async function clearCacheKey(key) {
  */
 export async function clearAllCache() {
   try {
-    const allKeys = await AsyncStorage.getAllKeys();
+    const allKeys = await storage.getAllKeys();
     const ourKeys = allKeys.filter((k) => k.startsWith(PREFIX));
     if (ourKeys.length > 0) {
-      await AsyncStorage.multiRemove(ourKeys);
+      await storage.multiRemove(ourKeys);
     }
   } catch (error) {
     console.warn("Cache clear all failed:", error.message);
