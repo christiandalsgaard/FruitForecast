@@ -62,11 +62,12 @@ async function fetchMarketsFromOverpass(latitude, longitude) {
     "out center body;",
   ].join("");
 
-  // POST with form-encoded body. Content-Type: application/x-www-form-urlencoded
-  // is a CORS "simple" content type — no preflight OPTIONS request needed.
+  // Use URLSearchParams as the POST body — browsers automatically set
+  // Content-Type: application/x-www-form-urlencoded (a CORS "simple" type,
+  // no preflight needed) and handle encoding correctly.
   const response = await fetch(OVERPASS_URL, {
     method: "POST",
-    body: `data=${encodeURIComponent(query)}`,
+    body: new URLSearchParams({ data: query }),
   });
 
   if (!response.ok) {
