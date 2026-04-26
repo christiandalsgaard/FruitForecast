@@ -1,12 +1,15 @@
 /**
- * InfoBar — row of info pills showing location, weather, and season.
- * The location pill is a tappable link that opens the region picker.
+ * InfoBar — compact row showing location and weather.
+ *
+ * Location pill is tappable to open the region picker.
+ * Weather pill shows current temperature and humidity.
+ * Season label is omitted — the month selector and produce
+ * scores communicate seasonality more clearly.
  */
 
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { COLORS, FONTS } from "../utils/theme";
-import { getSeasonInfo } from "../utils/season";
 
 function getWeatherEmoji(temp) {
   if (temp > 85) return "🔥";
@@ -16,12 +19,10 @@ function getWeatherEmoji(temp) {
   return "🥶";
 }
 
-export default function InfoBar({ locationName, weather, month, onLocationPress }) {
-  const season = getSeasonInfo(month);
-
+export default function InfoBar({ locationName, weather, onLocationPress }) {
   return (
     <View style={styles.row}>
-      {/* Location pill — tappable so users can change their region */}
+      {/* Location pill — tappable to change region */}
       <TouchableOpacity
         style={[styles.pill, styles.locationPill]}
         activeOpacity={0.6}
@@ -32,18 +33,14 @@ export default function InfoBar({ locationName, weather, month, onLocationPress 
         <Text style={styles.chevron}> ▾</Text>
       </TouchableOpacity>
 
+      {/* Weather pill — temperature and humidity at a glance */}
       {weather && (
         <View style={styles.pill}>
           <Text style={styles.pillText}>{getWeatherEmoji(weather.temp)} </Text>
           <Text style={styles.pillBold}>{weather.temp}°F</Text>
-          <Text style={styles.pillText}> · {weather.humidity}% humidity</Text>
+          <Text style={styles.pillText}> · {weather.humidity}%</Text>
         </View>
       )}
-
-      <View style={styles.pill}>
-        <Text style={styles.pillText}>{season.emoji} </Text>
-        <Text style={styles.pillBold}>{season.name}</Text>
-      </View>
     </View>
   );
 }
@@ -53,21 +50,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
-    gap: 10,
+    gap: 8,
     paddingHorizontal: 20,
-    marginBottom: 16,
+    marginBottom: 14,
   },
   pill: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "rgba(255,255,255,0.85)",
-    paddingVertical: 10,
-    paddingHorizontal: 18,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
     borderRadius: 50,
     borderWidth: 1,
-    borderColor: "rgba(255,107,53,0.15)",
+    borderColor: "rgba(255,255,255,0.3)",
   },
-  // Location pill has a slightly different style to hint that it's interactive
+  // Location pill — accent border to hint interactivity
   locationPill: {
     borderColor: COLORS.accent,
     borderWidth: 1.5,
@@ -81,14 +78,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: COLORS.textSecondary,
   },
-  // Underlined + accent-colored to look like a tappable link
   locationText: {
     fontSize: 13,
     fontWeight: "600",
     color: COLORS.accent,
     textDecorationLine: "underline",
   },
-  // Small down-arrow to signal a dropdown/picker
   chevron: {
     fontSize: 11,
     color: COLORS.accent,

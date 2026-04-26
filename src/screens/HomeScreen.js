@@ -99,23 +99,14 @@ export default function HomeScreen({
           <Text style={styles.title}>Fruit Forecast</Text>
           <View style={styles.divider} />
           <Text style={styles.subtitle}>
-            Discover what's freshest at your supermarket based on your location
-            and the time of year
+            What's freshest near you, right now
           </Text>
         </View>
 
         <InfoBar
           locationName={locationName}
           weather={weather}
-          month={month}
           onLocationPress={() => setShowRegionPicker(true)}
-        />
-        <MonthSelector
-          selectedMonth={month}
-          onSelect={(m) => {
-            setMonth(m);
-            track(EVENTS.MONTH_CHANGE, { month: m });
-          }}
         />
         <FilterBar
           filter={filter}
@@ -125,6 +116,13 @@ export default function HomeScreen({
           }}
           peakCount={peakCount}
           inSeasonCount={inSeasonCount}
+        />
+        <MonthSelector
+          selectedMonth={month}
+          onSelect={(m) => {
+            setMonth(m);
+            track(EVENTS.MONTH_CHANGE, { month: m });
+          }}
         />
 
         {/* Farmer's markets near the user's selected region */}
@@ -262,8 +260,8 @@ const styles = StyleSheet.create({
 
   // ── Header ─────────────────────────────────────────────────────
   header: {
-    paddingTop: 24,
-    paddingBottom: 24,
+    paddingTop: 20,
+    paddingBottom: 16,
     paddingHorizontal: 20,
     alignItems: "center",
   },
