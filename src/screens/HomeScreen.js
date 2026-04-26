@@ -106,6 +106,8 @@ export default function HomeScreen({
         <InfoBar
           locationName={locationName}
           weather={weather}
+          latitude={coords?.latitude}
+          longitude={coords?.longitude}
           onLocationPress={() => setShowRegionPicker(true)}
         />
         <FilterBar

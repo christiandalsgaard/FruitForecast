@@ -51,6 +51,58 @@ export async function fetchWeather(latitude, longitude) {
   );
 }
 
+/**
+ * Fetch 10-day weather forecast for a given latitude/longitude.
+ * Returns an array of { date, tempHigh, tempLow, emoji } objects.
+ * Results are cached for 30 minutes alongside current weather.
+ */
+export async function fetchForecast(latitude, longitude) {
+  const lat = latitude.toFixed(2);
+  const lon = longitude.toFixed(2);
+  const cacheKey = `forecast:${lat},${lon}`;
+
+  return getCached(
+    cacheKey,
+    async () => {
+      const url =
+        `${OPEN_METEO_URL}?latitude=${lat}&longitude=${lon}` +
+        `&daily=temperature_2m_max,temperature_2m_min,weathercode` +
+        `&temperature_unit=fahrenheit&forecast_days=10&timezone=auto`;
+
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Open-Meteo forecast ${response.status}`);
+
+      const data = await response.json();
+      const days = data.daily;
+
+      return days.time.map((date, i) => ({
+        date,
+        tempHigh: Math.round(days.temperature_2m_max[i]),
+        tempLow: Math.round(days.temperature_2m_min[i]),
+        emoji: weatherCodeToEmoji(days.weathercode[i]),
+      }));
+    },
+    TTL.WEATHER,
+  );
+}
+
+/**
+ * Map WMO weather codes to simple emoji.
+ * See: https://open-meteo.com/en/docs → weathercode
+ */
+function weatherCodeToEmoji(code) {
+  if (code === 0) return "☀️";
+  if (code <= 3) return "⛅";
+  if (code <= 48) return "🌫️";
+  if (code <= 57) return "🌧️";
+  if (code <= 67) return "🌧️";
+  if (code <= 77) return "🌨️";
+  if (code <= 82) return "🌧️";
+  if (code <= 86) return "🌨️";
+  if (code >= 95) return "⛈️";
+  return "🌤️";
+}
+
 // ── Geocoding ───────────────────────────────────────────────────
 
 /**
