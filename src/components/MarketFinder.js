@@ -26,6 +26,22 @@ export default function MarketFinder({ latitude, longitude }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // One-time cache clear to flush stale entries from previous broken code.
+  // Uses a localStorage flag so it only runs once per browser.
+  useEffect(() => {
+    try {
+      const cleared = localStorage.getItem("_ff_markets_cache_v2");
+      if (!cleared && latitude && longitude) {
+        const lat = latitude.toFixed(2);
+        const lon = longitude.toFixed(2);
+        clearCacheKey(`markets:${lat},${lon}`);
+        localStorage.setItem("_ff_markets_cache_v2", "1");
+      }
+    } catch {
+      // Not on web or localStorage unavailable — no-op
+    }
+  }, [latitude, longitude]);
+
   // Fetch markets when the user expands the section — lazy loading
   // so we don't hit the Overpass API unless the user actually wants this.
   const fetchMarkets = React.useCallback(() => {
@@ -37,7 +53,8 @@ export default function MarketFinder({ latitude, longitude }) {
         setMarkets(data);
         setLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("MarketFinder error:", err);
         setError("Could not load nearby markets");
         setLoading(false);
       });
