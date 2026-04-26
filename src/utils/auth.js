@@ -56,7 +56,8 @@ export async function signUp(email, password) {
 
     return { user: data.user, error: null };
   } catch (err) {
-    return { user: null, error: "Network error. Please check your connection." };
+    console.error("signUp error:", err);
+    return { user: null, error: friendlyError(err.message || "Network error. Please check your connection.") };
   }
 }
 
@@ -91,7 +92,8 @@ export async function signIn(email, password) {
 
     return { user: data.user, error: null };
   } catch (err) {
-    return { user: null, error: "Network error. Please check your connection." };
+    console.error("signIn error:", err);
+    return { user: null, error: friendlyError(err.message || "Network error. Please check your connection.") };
   }
 }
 
